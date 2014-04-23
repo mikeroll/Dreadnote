@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,14 +30,15 @@ public class NoteScreen extends Activity {
                 .commit();
         mode = Mode.PREVIEW;
 
-        setNoteColor(0xFFFFF8DC); //temporary!
+        // TODO: setNoteColor(0xFFFFF8DC); //temporary!
     }
 
-    public void setNoteColor(int color) {
-        this.getWindow().getDecorView().setBackgroundColor(color);
-        assert getActionBar() != null;
-        getActionBar().setBackgroundDrawable(new ColorDrawable(color));
-    }
+//    TODO
+//    public void setNoteColor(int color) {
+//        this.getWindow().getDecorView().setBackgroundColor(color);
+//        assert getActionBar() != null;
+//        getActionBar().setBackgroundDrawable(new ColorDrawable(0)); //transparent
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
