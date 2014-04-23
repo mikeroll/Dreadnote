@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="NoteScreen" parent="@style/AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+
 </resources>

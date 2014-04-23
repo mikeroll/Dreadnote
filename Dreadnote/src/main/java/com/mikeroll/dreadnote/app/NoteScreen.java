@@ -1,6 +1,7 @@
 package com.mikeroll.dreadnote.app;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,8 +13,14 @@ public class NoteScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
+        setNoteColor(0xFFFFF8DC);
     }
 
+    public void setNoteColor(int color) {
+        this.getWindow().getDecorView().setBackgroundColor(color);
+        assert getActionBar() != null;
+        getActionBar().setBackgroundDrawable(new ColorDrawable(color));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

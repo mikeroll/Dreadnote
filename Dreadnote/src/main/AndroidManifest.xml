@@ -19,7 +19,8 @@
         <activity
             android:name="com.mikeroll.dreadnote.app.NoteScreen"
             android:parentActivityName=".Dashboard"
-            android:label="@string/title_activity_note_screen" >
+            android:label="@string/title_activity_note_screen"
+            android:theme="@style/NoteScreen">
             <!-- DEBUG -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
