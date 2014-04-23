@@ -16,6 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.mikeroll.dreadnote.app.NoteScreen"
+            android:parentActivityName=".Dashboard"
+            android:label="@string/title_activity_note_screen" >
+            <!-- DEBUG -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- END DEBUG -->
+        </activity>
     </application>
 
 </manifest>
