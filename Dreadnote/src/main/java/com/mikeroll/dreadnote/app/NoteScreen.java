@@ -20,10 +20,6 @@ public class NoteScreen extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
-        if (savedInstanceState != null) {
-            return;
-        }
-
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -40,7 +36,7 @@ public class NoteScreen extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.note_screen, menu);
         return true;
