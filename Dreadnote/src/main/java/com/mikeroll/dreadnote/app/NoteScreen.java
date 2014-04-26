@@ -1,21 +1,20 @@
 package com.mikeroll.dreadnote.app;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class NoteScreen extends Activity {
+public class NoteScreen extends FragmentActivity {
 
-    private enum Mode { PREVIEW, EDITOR };
-    private Mode mode;
-    private static final String PREVIEW_TAG = "PREVIEW";
-    private static final String EDITOR_TAG = "EDITOR";
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +24,9 @@ public class NoteScreen extends Activity {
             return;
         }
 
-        getFragmentManager().beginTransaction()
-                .add(R.id.note_screen, new Preview(), PREVIEW_TAG)
-                .commit();
-        mode = Mode.PREVIEW;
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
 
         // TODO: setNoteColor(0xFFFFF8DC); //temporary!
     }
@@ -62,25 +60,31 @@ public class NoteScreen extends Activity {
     }
 
     private void switchMode() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment preview, editor;
-        if (mode == Mode.PREVIEW) {
-            editor = fm.findFragmentByTag(EDITOR_TAG);
-            if (editor == null) {
-                editor = new Editor();
-            }
-            ft.replace(R.id.note_screen, editor);
-            mode = Mode.EDITOR;
-        } else if (mode == Mode.EDITOR) {
-            preview = fm.findFragmentByTag(PREVIEW_TAG);
-            if (preview == null) {
-                preview = new Preview();
-            }
-            ft.replace(R.id.note_screen, preview);
-            mode = Mode.PREVIEW;
+        int current = mPager.getCurrentItem();
+        int next = (current == 0) ? 1 : 0;
+        mPager.setCurrentItem(next);
+    }
+
+    private class ModeSwitchAdapter extends FragmentStatePagerAdapter {
+
+        private static final int PAGES = 2;
+
+        public ModeSwitchAdapter(FragmentManager fm) {
+            super(fm);
         }
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.commit();
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0)
+                return new Preview();
+            else if (position == 1)
+                return new Editor();
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return PAGES;
+        }
     }
 }
