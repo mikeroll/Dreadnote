@@ -1,5 +1,6 @@
 package com.mikeroll.dreadnote.app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +10,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 
 public class NoteScreen extends FragmentActivity {
@@ -61,6 +65,22 @@ public class NoteScreen extends FragmentActivity {
         mPager.setCurrentItem(next);
     }
 
+    private void showKeyboard() {
+        EditText edit = (EditText) findViewById(R.id.editor);
+        if (edit != null) {
+            edit.requestFocus();
+            InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imgr.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        EditText edit = (EditText) findViewById(R.id.editor);
+        if (edit != null)
+            imgr.hideSoftInputFromWindow(edit.getWindowToken(), 0);
+    }
+
     private class ModeSwitchAdapter extends FragmentStatePagerAdapter {
 
         private static final int PAGES = 2;
@@ -71,16 +91,28 @@ public class NoteScreen extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0)
+            if (position == 0) {
                 return new Preview();
-            else if (position == 1)
+            } else if (position == 1) {
                 return new Editor();
+            }
             return null;
         }
 
         @Override
         public int getCount() {
             return PAGES;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+
+            if (position == 1) {
+                showKeyboard();
+            } else {
+                hideKeyboard();
+            }
         }
     }
 }
