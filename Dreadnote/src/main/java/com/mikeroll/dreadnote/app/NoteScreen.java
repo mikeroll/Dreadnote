@@ -27,16 +27,7 @@ public class NoteScreen extends FragmentActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-
-        // TODO: setNoteColor(0xFFFFF8DC); //temporary!
     }
-
-//    TODO
-//    public void setNoteColor(int color) {
-//        this.getWindow().getDecorView().setBackgroundColor(color);
-//        assert getActionBar() != null;
-//        getActionBar().setBackgroundDrawable(new ColorDrawable(0)); //transparent
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
