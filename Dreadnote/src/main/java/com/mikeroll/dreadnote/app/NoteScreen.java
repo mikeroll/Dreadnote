@@ -48,12 +48,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
 
     @Override
     public void onNoteChanged() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), "LOL", Toast.LENGTH_SHORT).show();
-            }
-        });
+        //TODO: Respond!
     }
 
     private void switchMode() {
