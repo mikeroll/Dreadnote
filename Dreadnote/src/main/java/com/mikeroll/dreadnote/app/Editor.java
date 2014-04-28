@@ -1,5 +1,6 @@
 package com.mikeroll.dreadnote.app;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Editor extends Fragment {
 
-    public Editor() {}
+    public Editor() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,9 +31,22 @@ public class Editor extends Fragment {
         View v = inflater.inflate(R.layout.fragment_editor, container, false);
         assert v != null;
         EditText edit = (EditText) v.findViewById(R.id.editor);
-        edit.addTextChangedListener(typeListener);
+        edit.addTextChangedListener(onTypingStoppedListener);
 
         return v;
+    }
+
+    private OnNoteChangedListener mListener;
+
+    public interface OnNoteChangedListener {
+        public void onNoteChanged();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mListener = (OnNoteChangedListener) activity;
     }
 
     private static final int TYPE_TIMEOUT = 800;
@@ -40,11 +54,11 @@ public class Editor extends Fragment {
     private Runnable update = new Runnable() {
         @Override
         public void run() {
-            //TODO: implement;
+            mListener.onNoteChanged();
         }
     };
 
-    private final TextWatcher typeListener = new TextWatcher() {
+    private final TextWatcher onTypingStoppedListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int before, int count) { }
         @Override
