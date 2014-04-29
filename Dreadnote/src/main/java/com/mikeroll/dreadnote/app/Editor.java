@@ -39,24 +39,16 @@ public class Editor extends Fragment {
     private OnNoteChangedListener mListener;
 
     public interface OnNoteChangedListener {
-        public void onNoteChanged();
+        public void onNoteChanged(String newData);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         mListener = (OnNoteChangedListener) activity;
     }
 
     private static final int TYPE_TIMEOUT = 800;
-
-    private Runnable update = new Runnable() {
-        @Override
-        public void run() {
-            mListener.onNoteChanged();
-        }
-    };
 
     private final TextWatcher onTypingStoppedListener = new TextWatcher() {
         @Override
@@ -69,6 +61,12 @@ public class Editor extends Fragment {
         @Override
         public void afterTextChanged(final Editable editable) {
             if (task != null) task.cancel(false);
+            Runnable update = new Runnable() {
+                @Override
+                public void run() {
+                    mListener.onNoteChanged(editable.toString());
+                }
+            };
             task = schex.schedule(update, TYPE_TIMEOUT, TimeUnit.MILLISECONDS);
         }
     };

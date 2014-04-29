@@ -19,7 +19,7 @@ import android.widget.Toast;
 public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener {
 
     private ViewPager mPager;
-    private PagerAdapter mPagerAdapter;
+    private ModeSwitchAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +47,10 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
     }
 
     @Override
-    public void onNoteChanged() {
-        //TODO: Respond!
+    public void onNoteChanged(final String newData) {
+        note = newData;
+        Preview preview = (Preview) mPagerAdapter.instantiateItem(mPager, 0);
+        preview.updateNotePresentation(newData);
     }
 
     private void switchMode() {
@@ -107,4 +109,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
             }
         }
     }
+
+    // This is temporary!
+    private String note;
 }
