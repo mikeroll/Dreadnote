@@ -1,24 +1,45 @@
 package com.mikeroll.dreadnote.app;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 
-public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener {
+public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener  {
+
+    private static final int PAGES = 2;
+    private static final int PREVIEW_POS = 0;
+    private static final int EDITOR_POS = 1;
 
     private ViewPager mPager;
+    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if (state == ViewPager.SCROLL_STATE_IDLE) {
+                if (mPager.getCurrentItem() == PREVIEW_POS) {
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                            .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
+                } else /* if (mPager.getCurrentItem() == EDITOR_POS) */ {
+                    EditText edit = (EditText) findViewById(R.id.editor);
+                    if (edit != null) {
+                        edit.requestFocus();
+                        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                                .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+            }
+        }
+
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+        @Override public void onPageSelected(int position) {}
+    };
     private ModeSwitchAdapter mPagerAdapter;
 
     @Override
@@ -28,6 +49,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mPager.setOnPageChangeListener(mPageChangeListener);
     }
 
     @Override
@@ -55,40 +77,14 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
 
     private void switchMode() {
         int current = mPager.getCurrentItem();
-        int next = (current == 0) ? 1 : 0;
+        int next = (current == PREVIEW_POS) ? EDITOR_POS : PREVIEW_POS;
         mPager.setCurrentItem(next);
-    }
-
-    private class KeyboardCtl {
-
-        private boolean isSticky = true;   //TODO: make this configurable
-
-        public boolean isSticky() { return isSticky; }
-
-        private void showKeyboard(EditText edit) {
-            edit.requestFocus();
-            InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imgr.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
-        }
-
-        private void hideKeyboard(EditText edit) {
-            InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (edit != null) {
-                imgr.hideSoftInputFromWindow(edit.getWindowToken(), 0);
-            }
-        }
     }
 
     private class ModeSwitchAdapter extends FragmentStatePagerAdapter {
 
-        private static final int PAGES = 2;
-        private static final int PREVIEW_POS = 0;
-        private static final int EDITOR_POS = 1;
-
         private Preview preview = new Preview();
         private Editor editor = new Editor();
-
-        private KeyboardCtl keyctl = new KeyboardCtl();
 
         public ModeSwitchAdapter(FragmentManager fm) {
             super(fm);
@@ -98,29 +94,13 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         public Fragment getItem(int position) {
             if (position == PREVIEW_POS) {
                 return preview;
-            } else if (position == EDITOR_POS) {
+            } /* else if (position == EDITOR_POS) */
                 return editor;
-            }
-            return null;
         }
 
         @Override
         public int getCount() {
             return PAGES;
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-
-            EditText et = (EditText) findViewById(R.id.editor);
-            if (position == PREVIEW_POS) {
-                keyctl.hideKeyboard(et);
-            } else if (position == EDITOR_POS) {
-                if (keyctl.isSticky()) {
-                    keyctl.showKeyboard(et);
-                }
-            }
         }
     }
 
