@@ -59,25 +59,36 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         mPager.setCurrentItem(next);
     }
 
-    private void showKeyboard() {
-        EditText edit = (EditText) findViewById(R.id.editor);
-        if (edit != null) {
+    private class KeyboardCtl {
+
+        private boolean isSticky = true;   //TODO: make this configurable
+
+        public boolean isSticky() { return isSticky; }
+
+        private void showKeyboard(EditText edit) {
             edit.requestFocus();
             InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imgr.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
         }
-    }
 
-    private void hideKeyboard() {
-        InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        EditText edit = (EditText) findViewById(R.id.editor);
-        if (edit != null)
-            imgr.hideSoftInputFromWindow(edit.getWindowToken(), 0);
+        private void hideKeyboard(EditText edit) {
+            InputMethodManager imgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (edit != null) {
+                imgr.hideSoftInputFromWindow(edit.getWindowToken(), 0);
+            }
+        }
     }
 
     private class ModeSwitchAdapter extends FragmentStatePagerAdapter {
 
         private static final int PAGES = 2;
+        private static final int PREVIEW_POS = 0;
+        private static final int EDITOR_POS = 1;
+
+        private Preview preview = new Preview();
+        private Editor editor = new Editor();
+
+        private KeyboardCtl keyctl = new KeyboardCtl();
 
         public ModeSwitchAdapter(FragmentManager fm) {
             super(fm);
@@ -85,10 +96,10 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) {
-                return new Preview();
-            } else if (position == 1) {
-                return new Editor();
+            if (position == PREVIEW_POS) {
+                return preview;
+            } else if (position == EDITOR_POS) {
+                return editor;
             }
             return null;
         }
@@ -102,10 +113,13 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
 
-            if (position == 1) {
-                showKeyboard();
-            } else {
-                hideKeyboard();
+            EditText et = (EditText) findViewById(R.id.editor);
+            if (position == PREVIEW_POS) {
+                keyctl.hideKeyboard(et);
+            } else if (position == EDITOR_POS) {
+                if (keyctl.isSticky()) {
+                    keyctl.showKeyboard(et);
+                }
             }
         }
     }
