@@ -1,4 +1,4 @@
-package com.mikeroll.dreadnote.app;
+package com.mikeroll.dreadnote.frontend;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import com.mikeroll.dreadnote.app.R;
 
 
 public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener  {

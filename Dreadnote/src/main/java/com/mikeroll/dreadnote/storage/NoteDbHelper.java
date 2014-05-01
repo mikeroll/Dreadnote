@@ -1,4 +1,4 @@
-package com.mikeroll.dreadnote.app.Storage;
+package com.mikeroll.dreadnote.storage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

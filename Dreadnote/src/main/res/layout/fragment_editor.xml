@@ -7,7 +7,7 @@
     android:paddingRight="@dimen/content_horizontal_margin"
     android:paddingTop="@dimen/content_vertical_margin"
     android:paddingBottom="@dimen/content_vertical_margin"
-    tools:context="com.mikeroll.dreadnote.app.Editor">
+    tools:context="com.mikeroll.dreadnote.frontend.Editor">
 
     <EditText
             android:id="@+id/editor"
