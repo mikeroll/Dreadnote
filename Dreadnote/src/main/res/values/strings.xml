@@ -10,4 +10,7 @@
     <string name="switch_mode">Switch mode</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--TODO: remove this-->
+    <string name="debug_string">**bold***italic*normal  </string>
+
 </resources>

@@ -41,6 +41,12 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
     };
     private ModeSwitchAdapter mPagerAdapter;
 
+    private String note;
+
+    public String getNote() {
+        return note;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,12 +120,5 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         public int getCount() {
             return PAGES;
         }
-    }
-
-    // This is temporary!
-    private String note;
-
-    public String getNote() {
-        return note;
     }
 }
