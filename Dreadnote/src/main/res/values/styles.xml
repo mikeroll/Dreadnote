@@ -6,7 +6,7 @@
     </style>
 
     <style name="NoteScreen" parent="@style/AppTheme">
-        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowContentOverlay">@drawable/underline</item>
     </style>
 
 
