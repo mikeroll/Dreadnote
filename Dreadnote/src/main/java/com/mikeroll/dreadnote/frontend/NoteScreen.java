@@ -1,16 +1,14 @@
 package com.mikeroll.dreadnote.frontend;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import com.mikeroll.dreadnote.app.R;
+import com.mikeroll.dreadnote.R;
 
 
 public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener  {
@@ -51,6 +49,8 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(mPageChangeListener);
+
+        note = getIntent().getStringExtra("NOTE");
     }
 
     @Override
@@ -61,10 +61,13 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.switch_mode) {
-            switchMode();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.switch_mode:
+                switchMode();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -74,6 +77,14 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         note = newData;
         Preview preview = (Preview) mPagerAdapter.instantiateItem(mPager, 0);
         preview.updateNotePresentation(newData);
+    }
+
+    @Override
+    public void finish() {
+        Intent result = new Intent();
+        result.putExtra("NOTE", note);
+        setResult(RESULT_OK, result);
+        super.finish();
     }
 
     private void switchMode() {
@@ -107,4 +118,8 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
 
     // This is temporary!
     private String note;
+
+    public String getNote() {
+        return note;
+    }
 }

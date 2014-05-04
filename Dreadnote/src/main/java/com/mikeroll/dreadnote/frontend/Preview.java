@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import com.commonsware.cwac.anddown.AndDown;
-import com.mikeroll.dreadnote.app.R;
+import com.mikeroll.dreadnote.R;
 
 public class Preview extends Fragment {
 
@@ -22,11 +22,17 @@ public class Preview extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_preview, container, false);
         assert v != null;
         v.findViewById(R.id.preview).setBackgroundColor(0);
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String initialData = ((NoteScreen)getActivity()).getNote();
+        updateNotePresentation(initialData);
     }
 
     private AndDown converter = new AndDown();

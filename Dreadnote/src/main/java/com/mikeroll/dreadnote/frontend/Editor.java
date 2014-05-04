@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import com.mikeroll.dreadnote.app.R;
+import com.mikeroll.dreadnote.R;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,8 +33,15 @@ public class Editor extends Fragment {
         assert v != null;
         EditText edit = (EditText) v.findViewById(R.id.editor);
         edit.addTextChangedListener(onTypingStoppedListener);
-
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        String initialData = ((NoteScreen)getActivity()).getNote();
+        EditText edit = (EditText) getView().findViewById(R.id.editor);
+        edit.append(initialData);
     }
 
     private OnNoteChangedListener mListener;
