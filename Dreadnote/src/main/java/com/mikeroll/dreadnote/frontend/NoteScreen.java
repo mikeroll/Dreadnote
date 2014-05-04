@@ -50,7 +50,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(mPageChangeListener);
 
-        note = getIntent().getStringExtra("NOTE");
+        note = getIntent().getStringExtra(ExtrasNames.NOTE_CONTENT);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
     @Override
     public void finish() {
         Intent result = new Intent();
-        result.putExtra("NOTE", note);
+        result.putExtra(ExtrasNames.NOTE_CONTENT, note);
         setResult(RESULT_OK, result);
         super.finish();
     }
