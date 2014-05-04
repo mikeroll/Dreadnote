@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.mikeroll.dreadnote.R;
@@ -21,6 +26,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private static final int EDITOR_POS = 1;
 
     private ViewPager mPager;
+    private ModeSwitchAdapter mPagerAdapter;
     private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrollStateChanged(int state) {
@@ -39,10 +45,22 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             }
         }
 
-        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position == PREVIEW_POS) {
+                ld.getDrawable(1).setAlpha((int) (0xFF * (1 - positionOffset)));
+            } else /* if (position == EDITOR_POS) */ {
+                ld.getDrawable(1).setAlpha((int) (0xFF * (positionOffset)));
+            }
+            rootView.setBackgroundDrawable(ld);
+        }
+
         @Override public void onPageSelected(int position) {}
     };
-    private ModeSwitchAdapter mPagerAdapter;
+
+    // Color transition stuff
+    View rootView;
+    ColorDrawable previewColor;
+    LayerDrawable ld;
 
     private String note;
 
@@ -54,12 +72,18 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
+
+        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        note = getIntent().getStringExtra(ExtrasNames.NOTE_CONTENT);
+        previewColor = new ColorDrawable(0xFFFFF7C4); //TODO: get color from note itself
+        ld = new LayerDrawable(new Drawable[]{new ColorDrawable(Color.WHITE), previewColor});
+        rootView = getWindow().getDecorView();
+        rootView.setBackgroundDrawable(ld);
+
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ModeSwitchAdapter(getFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(mPageChangeListener);
-
-        note = getIntent().getStringExtra(ExtrasNames.NOTE_CONTENT);
     }
 
     @Override
