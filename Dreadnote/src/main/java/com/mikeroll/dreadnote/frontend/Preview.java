@@ -43,7 +43,7 @@ public class Preview extends Fragment {
             @Override
             public void run() {
                 WebView webView = (WebView) getView().findViewById(R.id.preview);
-                webView.loadData(html, "text/html", "UTF-8");
+                webView.loadData(html, "text/html; charset=UTF-8", null);
             }
         });
     }
