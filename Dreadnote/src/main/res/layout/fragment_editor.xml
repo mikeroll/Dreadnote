@@ -1,18 +1,18 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editor_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/content_horizontal_margin"
-    android:paddingRight="@dimen/content_horizontal_margin"
-    android:paddingTop="@dimen/content_vertical_margin"
-    android:paddingBottom="@dimen/content_vertical_margin"
     tools:context="com.mikeroll.dreadnote.frontend.Editor">
 
     <EditText
             android:id="@+id/editor"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_above="@+id/editor_toolbar"
+            android:paddingLeft="@dimen/content_horizontal_margin"
+            android:paddingRight="@dimen/content_horizontal_margin"
+            android:paddingTop="@dimen/content_vertical_margin"
             android:background="#00000000"
             android:typeface="monospace"
             android:inputType="textMultiLine"
@@ -20,4 +20,20 @@
             android:scrollbars="vertical"
             android:imeOptions="flagNoExtractUi"/>
 
-</FrameLayout>
+    <LinearLayout
+            android:id="@+id/editor_toolbar"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+        <ImageButton
+                android:id="@+id/tool_bold"
+                style="@style/EditorToolbarButton"
+                android:src="@drawable/ic_edit_bold"/>
+        <ImageButton
+                android:id="@+id/tool_italic"
+                style="@style/EditorToolbarButton"
+                android:src="@drawable/ic_edit_italic"/>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -9,5 +9,12 @@
         <item name="android:windowContentOverlay">@drawable/underline</item>
     </style>
 
+    <style name="EditorToolbarButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">48sp</item>
+        <item name="android:background">@drawable/toolbar_background</item>
+    </style>
+
 
 </resources>
