@@ -1,15 +1,16 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/editor_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.mikeroll.dreadnote.frontend.Editor">
 
     <EditText
             android:id="@+id/editor"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_above="@+id/editor_toolbar"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:paddingLeft="@dimen/content_horizontal_margin"
             android:paddingRight="@dimen/content_horizontal_margin"
             android:paddingTop="@dimen/content_vertical_margin"
@@ -22,18 +23,28 @@
 
     <LinearLayout
             android:id="@+id/editor_toolbar"
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-        <ImageButton
-                android:id="@+id/tool_bold"
-                style="@style/EditorToolbarButton"
-                android:src="@drawable/ic_edit_bold"/>
-        <ImageButton
-                android:id="@+id/tool_italic"
-                style="@style/EditorToolbarButton"
-                android:src="@drawable/ic_edit_italic"/>
-    </LinearLayout>
+            android:orientation="vertical">
+        <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@drawable/separator"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <ImageButton
+                    android:contentDescription="@string/toolbar_bold"
+                    android:id="@+id/tool_bold"
+                    style="@style/EditorToolbarButton"
+                    android:src="@drawable/ic_edit_bold"/>
+            <ImageButton
+                    android:contentDescription="@string/toolbar_italic"
+                    android:id="@+id/tool_italic"
+                    style="@style/EditorToolbarButton"
+                    android:src="@drawable/ic_edit_italic"/>
 
-</RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
