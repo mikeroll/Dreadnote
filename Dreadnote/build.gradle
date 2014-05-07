@@ -37,6 +37,5 @@ dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:support-v13:+'
     compile 'com.commonsware.cwac:anddown:0.2.0'
-    compile 'com.android.support:appcompat-v7:19.+'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
