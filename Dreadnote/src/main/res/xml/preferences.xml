@@ -13,6 +13,7 @@
                 android:key="@string/pref_toolbar"
                 android:title="@string/pref_toolbar_title"
                 android:summary="@string/pref_toolbar_summary"
-                android:defaultValue="true"/>
+                android:defaultValue="false"
+                android:enabled="false"/>
     </PreferenceCategory>
 </PreferenceScreen>
