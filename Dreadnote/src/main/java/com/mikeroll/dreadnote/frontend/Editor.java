@@ -2,7 +2,9 @@ package com.mikeroll.dreadnote.frontend;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,6 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 public class Editor extends Fragment {
 
+    private EditText edit;
+    private View toolbar;
+
     public Editor() { }
 
     @Override
@@ -31,16 +36,24 @@ public class Editor extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_editor, container, false);
         assert v != null;
-        EditText edit = (EditText) v.findViewById(R.id.editor);
+        edit = (EditText) v.findViewById(R.id.editor);
         edit.addTextChangedListener(onTypingStoppedListener);
+        toolbar = v.findViewById(R.id.editor_toolbar);
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean showToolbar = prefs.getBoolean(getString(R.string.pref_toolbar), true);
+        toolbar.setVisibility(showToolbar ? View.VISIBLE : View.INVISIBLE);
+        super.onResume();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         String initialData = ((NoteScreen)getActivity()).getNote();
-        EditText edit = (EditText) getView().findViewById(R.id.editor);
         edit.append(initialData);
     }
 

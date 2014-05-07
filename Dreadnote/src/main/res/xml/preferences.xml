@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_editor_title"
+        android:key="pref_editor">
+        <CheckBoxPreference
+                android:key="@string/pref_sticky_keyboard"
+                android:title="@string/pref_sticky_keyboard_title"
+                android:summary="@string/pref_sticky_keyboard_summary"
+                android:defaultValue="true"/>
+        <CheckBoxPreference
+                android:key="@string/pref_toolbar"
+                android:title="@string/pref_toolbar_title"
+                android:summary="@string/pref_toolbar_summary"
+                android:defaultValue="true"/>
+    </PreferenceCategory>
+</PreferenceScreen>

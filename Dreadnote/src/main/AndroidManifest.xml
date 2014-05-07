@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mikeroll.dreadnote">
+    package="com.mikeroll.dreadnote" >
 
     <application
         android:allowBackup="true"
@@ -18,9 +18,13 @@
         </activity>
         <activity
             android:name=".frontend.NoteScreen"
-            android:parentActivityName=".frontend.Dashboard"
             android:label="@string/title_activity_note_screen"
-            android:theme="@style/NoteScreen">
+            android:parentActivityName=".frontend.Dashboard"
+            android:theme="@style/NoteScreen" >
+        </activity>
+        <activity
+            android:name=".frontend.Settings"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 

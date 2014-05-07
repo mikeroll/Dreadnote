@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+    <resources>
 
     <string name="app_name">Dreadnote</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_note_screen">NoteScreen</string>
     <string name="editor_fragment">Editor</string>
     <string name="preview_fragment">Preview</string>
     <string name="switch_mode">Switch mode</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">Settings</string>
 
-    <!--TODO: remove this-->
+    <!-- TODO: remove this -->
     <string name="debug_string">**bold***italic*normal  </string>
 
     <!-- Toolbar icons -->
     <string name="toolbar_bold">Bold</string>
     <string name="toolbar_italic">Italic</string>
+
+    <!-- Preferences -->
+    <string name="pref_editor_title">Editor</string>
+
+    <string name="pref_toolbar">pref_toolbar</string>
+    <string name="pref_toolbar_title">Show toolbar</string>
+    <string name="pref_toolbar_summary">Useful shortcuts for editing</string>
+
+    <string name="pref_sticky_keyboard">pref_sticky_keyboard</string>
+    <string name="pref_sticky_keyboard_title">Enable auto-keyboard</string>
+    <string name="pref_sticky_keyboard_summary">Open on-screen keyboard when editor is focused</string>
 
 </resources>

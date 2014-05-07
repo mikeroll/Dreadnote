@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -25,6 +27,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private static final int PREVIEW_POS = 0;
     private static final int EDITOR_POS = 1;
 
+    private Preview preview = new Preview();
+    private Editor editor = new Editor();
+
     private ViewPager mPager;
     private ModeSwitchAdapter mPagerAdapter;
     private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -36,7 +41,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
                             .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
                 } else /* if (mPager.getCurrentItem() == EDITOR_POS) */ {
                     EditText edit = (EditText) findViewById(R.id.editor);
-                    if (edit != null) {
+                    if (isStickyKeyboardEnabled && edit != null) {
                         edit.requestFocus();
                         ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                                 .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
@@ -57,10 +62,13 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         @Override public void onPageSelected(int position) {}
     };
 
+    // Preferences
+    private boolean isStickyKeyboardEnabled;
+
     // Color transition stuff
-    View rootView;
-    ColorDrawable previewColor;
-    LayerDrawable ld;
+    private View rootView;
+    private ColorDrawable previewColor;
+    private LayerDrawable ld;
 
     private String note;
 
@@ -87,6 +95,13 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     }
 
     @Override
+    protected void onResume() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isStickyKeyboardEnabled = prefs.getBoolean(getString(R.string.pref_sticky_keyboard), true);
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.note_screen, menu);
         return true;
@@ -101,8 +116,21 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             case R.id.switch_mode:
                 switchMode();
                 return true;
+            case R.id.action_settings:
+                openSettings();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void switchMode() {
+        int current = mPager.getCurrentItem();
+        int next = (current == PREVIEW_POS) ? EDITOR_POS : PREVIEW_POS;
+        mPager.setCurrentItem(next);
+    }
+
+    private void openSettings() {
+        startActivity(new Intent(this, Settings.class));
     }
 
     @Override
@@ -120,16 +148,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         super.finish();
     }
 
-    private void switchMode() {
-        int current = mPager.getCurrentItem();
-        int next = (current == PREVIEW_POS) ? EDITOR_POS : PREVIEW_POS;
-        mPager.setCurrentItem(next);
-    }
-
     private class ModeSwitchAdapter extends FragmentStatePagerAdapter {
-
-        private Preview preview = new Preview();
-        private Editor editor = new Editor();
 
         public ModeSwitchAdapter(FragmentManager fm) {
             super(fm);

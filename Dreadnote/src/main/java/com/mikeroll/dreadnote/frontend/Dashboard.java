@@ -2,7 +2,9 @@ package com.mikeroll.dreadnote.frontend;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,18 @@ public class Dashboard extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        performFirstRunConfig();
+    }
+
+    private void performFirstRunConfig() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isFirstRun = prefs.getBoolean("isfirstrun", true);
+
+        if (isFirstRun) {
+            prefs.edit().putBoolean("isfirstrun", false).commit();
+            PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        }
     }
 
     public void onBtn(View view) {
