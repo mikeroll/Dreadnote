@@ -1,8 +1,11 @@
 package com.mikeroll.dreadnote.frontend;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.*;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,7 +14,7 @@ import android.widget.EditText;
 import com.mikeroll.dreadnote.R;
 
 
-public class NoteScreen extends FragmentActivity implements Editor.OnNoteChangedListener  {
+public class NoteScreen extends Activity implements Editor.OnNoteChangedListener  {
 
     private static final int PAGES = 2;
     private static final int PREVIEW_POS = 0;
@@ -52,7 +55,7 @@ public class NoteScreen extends FragmentActivity implements Editor.OnNoteChanged
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ModeSwitchAdapter(getSupportFragmentManager());
+        mPagerAdapter = new ModeSwitchAdapter(getFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(mPageChangeListener);
 

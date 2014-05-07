@@ -75,6 +75,7 @@
     <orderEntry type="library" exported="" name="anddown-0.2.0" level="project" />
     <orderEntry type="library" exported="" name="libtestlib-0.2.0-armeabi" level="project" />
     <orderEntry type="library" exported="" name="libtestlib-0.2.0-armeabi-v7a" level="project" />
+    <orderEntry type="library" exported="" name="support-v13-19.1.0" level="project" />
   </component>
 </module>
 

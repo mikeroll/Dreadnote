@@ -1,8 +1,8 @@
 package com.mikeroll.dreadnote.frontend;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.mikeroll.dreadnote.R;
 
 
-public class Dashboard extends FragmentActivity {
+public class Dashboard extends Activity {
 
     public static final int REQUEST_OPEN_NOTE = 0;
 
