@@ -5,5 +5,5 @@ public class ExtrasNames {
     private ExtrasNames() {}
 
     /** Full markdown source of note */
-    public static final String NOTE_CONTENT = "NOTE_CONTENT";
+    public static final String NOTE = "NOTE";
 }

@@ -30,7 +30,7 @@ public class Preview extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String initialData = ((NoteScreen)getActivity()).getNote();
+        String initialData = ((NoteScreen)getActivity()).getNote().getContent();
         updateNotePresentation(initialData);
     }
 

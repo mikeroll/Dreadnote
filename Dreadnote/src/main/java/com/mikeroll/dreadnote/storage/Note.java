@@ -9,8 +9,12 @@ public class Note implements Parcelable {
     private String content;
     private int color;
 
-    public Note(String title, int color) {
+    public Note(String title) {
         this(title, 0xFFFFFFFF, "");
+    }
+
+    public Note(String title, int color) {
+        this(title, color, "");
     }
 
     public Note(String title, int color, String content) {
@@ -50,9 +54,9 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(content);
-        parcel.writeInt(color);
         parcel.writeString(title);
+        parcel.writeInt(color);
+        parcel.writeString(content);
     }
 
     public static final Parcelable.Creator<Note> CREATOR = new Parcelable.Creator<Note>() {

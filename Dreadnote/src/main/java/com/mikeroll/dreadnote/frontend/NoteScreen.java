@@ -1,5 +1,6 @@
 package com.mikeroll.dreadnote.frontend;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import com.mikeroll.dreadnote.R;
+import com.mikeroll.dreadnote.storage.Note;
 
 
 public class NoteScreen extends Activity implements Editor.OnNoteChangedListener  {
@@ -70,9 +72,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private ColorDrawable previewColor;
     private LayerDrawable ld;
 
-    private String note;
+    private Note note;
 
-    public String getNote() {
+    public Note getNote() {
         return note;
     }
 
@@ -81,9 +83,14 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
 
-        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        note = getIntent().getStringExtra(ExtrasNames.NOTE_CONTENT);
-        previewColor = new ColorDrawable(0xFFFFF7C4); //TODO: get color from note itself
+        note = getIntent().getParcelableExtra(ExtrasNames.NOTE);
+
+        ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            ab.setTitle(note.getTitle());
+        }
+        previewColor = new ColorDrawable(note.getColor());
         ld = new LayerDrawable(new Drawable[]{new ColorDrawable(Color.WHITE), previewColor});
         rootView = getWindow().getDecorView();
         rootView.setBackgroundDrawable(ld);
@@ -135,16 +142,14 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
 
     @Override
     public void onNoteChanged(final String newData) {
-        note = newData;
+        note.setContent(newData);
         Preview preview = (Preview) mPagerAdapter.instantiateItem(mPager, 0);
         preview.updateNotePresentation(newData);
     }
 
     @Override
     public void finish() {
-        Intent result = new Intent();
-        result.putExtra(ExtrasNames.NOTE_CONTENT, note);
-        setResult(RESULT_OK, result);
+        setResult(RESULT_OK, new Intent().putExtra(ExtrasNames.NOTE, note));
         super.finish();
     }
 

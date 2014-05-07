@@ -8,8 +8,8 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import com.mikeroll.dreadnote.R;
+import com.mikeroll.dreadnote.storage.Note;
 
 
 public class Dashboard extends Activity {
@@ -36,18 +36,16 @@ public class Dashboard extends Activity {
 
     public void onBtn(View view) {
         Intent i = new Intent(this, NoteScreen.class);
-        i.putExtra(ExtrasNames.NOTE_CONTENT, getResources().getString(R.string.debug_string));
+        Note note = new Note("Welcome!", getResources().getColor(R.color.note_green),
+                getResources().getString(R.string.debug_string));
+        i.putExtra(ExtrasNames.NOTE, note);
         startActivityForResult(i, REQUEST_OPEN_NOTE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_OPEN_NOTE) {
-            String newData = data.getStringExtra(ExtrasNames.NOTE_CONTENT);
-            Toast.makeText(this, newData, Toast.LENGTH_LONG).show(); //TODO: this is debugging
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

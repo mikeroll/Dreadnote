@@ -53,7 +53,7 @@ public class Editor extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String initialData = ((NoteScreen)getActivity()).getNote();
+        String initialData = ((NoteScreen)getActivity()).getNote().getContent();
         edit.append(initialData);
     }
 
