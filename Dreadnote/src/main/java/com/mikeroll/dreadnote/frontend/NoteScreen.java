@@ -1,6 +1,5 @@
 package com.mikeroll.dreadnote.frontend;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
@@ -72,7 +71,6 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         return note;
     }
 
-    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +140,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.switch_page:
+            case R.id.action_switch_mode:
                 switchPage();
                 return true;
             case R.id.action_settings:
@@ -168,7 +166,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         if (mode == PREVIEW) {
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
-            if (menu != null) menu.getItem(0).setIcon(R.drawable.ic_action_edit);
+            if (menu != null) {
+                menu.getItem(0).setIcon(R.drawable.ic_action_edit);
+            }
         } else /* if (mode == EDITOR) */ {
             EditText edit = (EditText) findViewById(R.id.editor);
             if (isStickyKeyboardEnabled && edit != null) {
@@ -176,7 +176,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                         .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
             }
-            if (menu != null) menu.getItem(0).setIcon(R.drawable.ic_action_accept);
+            if (menu != null) {
+                menu.getItem(0).setIcon(R.drawable.ic_action_accept);
+            }
         }
         boolean editing = (mode == EDITOR);
         noteTitle.setFocusable(editing);

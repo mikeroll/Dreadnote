@@ -6,7 +6,7 @@
     <string name="title_activity_note_screen">Note</string>
     <string name="editor_fragment">Editor</string>
     <string name="preview_fragment">Preview</string>
-    <string name="switch_mode">Switch mode</string>
+    <string name="action_switch_mode">Switch mode</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- TODO: remove this -->
@@ -29,5 +29,6 @@
 
     <!-- Messages -->
     <string name="error_empty_title">Title cannot be empty!</string>
+    <string name="action_share">Share</string>
 
 </resources>
