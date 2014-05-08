@@ -21,8 +21,10 @@
             android:name=".frontend.NoteScreen"
             android:label="@string/title_activity_note_screen"
             android:logo="@drawable/ic_ab_logo"
-            android:parentActivityName=".frontend.Dashboard"
-            android:theme="@style/NoteScreen" >
+            android:theme="@style/NoteScreen">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".frontend.Dashboard" />
         </activity>
         <activity
             android:name=".frontend.Settings"

@@ -81,24 +81,26 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         note = getIntent().getParcelableExtra(ExtrasNames.NOTE);
 
         ActionBar ab = getActionBar();
-        ab.setCustomView(R.layout.note_title);
-        ab.setDisplayUseLogoEnabled(true);
-        noteTitle = (EditText)ab.getCustomView().findViewById(R.id.note_title);
-        noteTitle.setText(note.getTitle());
-        noteTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus) {
-                    Editable newTitle = noteTitle.getText();
-                    //TODO: expand validation
-                    if (newTitle != null && newTitle.length() != 0) {
-                        note.setTitle(newTitle.toString());
-                    } else {
-                        noteTitle.setText(note.getTitle());
+        if (ab != null) {
+            ab.setCustomView(R.layout.note_title);
+            ab.setDisplayUseLogoEnabled(true);
+            noteTitle = (EditText) ab.getCustomView().findViewById(R.id.note_title);
+            noteTitle.setText(note.getTitle());
+            noteTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if (!hasFocus) {
+                        Editable newTitle = noteTitle.getText();
+                        //TODO: expand validation
+                        if (newTitle != null && newTitle.length() != 0) {
+                            note.setTitle(newTitle.toString());
+                        } else {
+                            noteTitle.setText(note.getTitle());
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
 
         previewColor = new ColorDrawable(note.getColor());
         ld = new LayerDrawable(new Drawable[]{new ColorDrawable(Color.WHITE), previewColor});

@@ -1,5 +1,6 @@
 package com.mikeroll.dreadnote.frontend;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,22 +24,23 @@ public class Preview extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_preview, container, false);
-        v.findViewById(R.id.preview).setBackgroundColor(0);
+        if (v != null) v.findViewById(R.id.preview).setBackgroundColor(0);
         return v;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String initialData = ((NoteScreen)getActivity()).getNote().getContent();
-        updateNotePresentation(initialData);
+        NoteScreen ns = (NoteScreen)getActivity();
+        if (ns != null) updateNotePresentation(ns.getNote().getContent());
     }
 
     private AndDown converter = new AndDown();
 
     public void updateNotePresentation(String md) {
         final String html = converter.markdownToHtml(md);
-        getActivity().runOnUiThread(new Runnable() {
+        Activity a = getActivity();
+        if (a != null) a.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 WebView webView = (WebView) getView().findViewById(R.id.preview);

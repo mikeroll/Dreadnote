@@ -24,7 +24,7 @@ public class Note implements Parcelable {
     }
 
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     public void setTitle(String title) {
@@ -32,7 +32,7 @@ public class Note implements Parcelable {
     }
 
     public String getContent() {
-        return content;
+        return content != null ? content : "";
     }
 
     public void setContent(String content) {
