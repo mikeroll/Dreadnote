@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="note_blue">#A8DFF4</color>
-    <color name="note_magenta">#DDBCEE</color>
-    <color name="note_green">#D3E992</color>
-    <color name="note_yellow">#FFE3A0</color>
-    <color name="note_red">#FFAFAF</color>
+    <color name="note_blue_lt">#A8DFF4</color>
+    <color name="note_magenta_lt">#DDBCEE</color>
+    <color name="note_green_lt">#D3E992</color>
+    <color name="note_yellow">#FFBD21</color>
+    <color name="note_yellow_lt">#FFE3A0</color>
+    <color name="note_red_lt">#FFAFAF</color>
+    <color name="note_white">#FFFFFF</color>
 </resources>

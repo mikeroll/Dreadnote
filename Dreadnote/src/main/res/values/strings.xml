@@ -27,4 +27,7 @@
     <string name="pref_sticky_keyboard_title">Enable auto-keyboard</string>
     <string name="pref_sticky_keyboard_summary">Open on-screen keyboard when editor is focused</string>
 
+    <!-- Messages -->
+    <string name="error_empty_title">Title cannot be empty!</string>
+
 </resources>

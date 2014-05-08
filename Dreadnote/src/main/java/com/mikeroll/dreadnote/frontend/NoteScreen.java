@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +64,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private ColorDrawable previewColor;
     private LayerDrawable ld;
     private EditText noteTitle;
+    private Menu menu;
 
     private Note note;
 
@@ -79,15 +81,22 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         note = getIntent().getParcelableExtra(ExtrasNames.NOTE);
 
         ActionBar ab = getActionBar();
-        if (ab != null)
-            ab.setCustomView(R.layout.note_title);
+        ab.setCustomView(R.layout.note_title);
+        ab.setDisplayUseLogoEnabled(true);
         noteTitle = (EditText)ab.getCustomView().findViewById(R.id.note_title);
         noteTitle.setText(note.getTitle());
         noteTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus)
-                    note.setTitle(noteTitle.getText().toString());
+                if (!hasFocus) {
+                    Editable newTitle = noteTitle.getText();
+                    //TODO: expand validation
+                    if (newTitle != null && newTitle.length() != 0) {
+                        note.setTitle(newTitle.toString());
+                    } else {
+                        noteTitle.setText(note.getTitle());
+                    }
+                }
             }
         });
 
@@ -121,6 +130,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.note_screen, menu);
+        this.menu = menu;
         return true;
     }
 
@@ -156,6 +166,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         if (mode == PREVIEW) {
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
+            if (menu != null) menu.getItem(0).setIcon(R.drawable.ic_action_edit);
         } else /* if (mode == EDITOR) */ {
             EditText edit = (EditText) findViewById(R.id.editor);
             if (isStickyKeyboardEnabled && edit != null) {
@@ -163,12 +174,14 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                         .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
             }
+            if (menu != null) menu.getItem(0).setIcon(R.drawable.ic_action_accept);
         }
-        boolean editing = mode == EDITOR;
+        boolean editing = (mode == EDITOR);
         noteTitle.setFocusable(editing);
         noteTitle.setFocusableInTouchMode(editing);
         noteTitle.setClickable(editing);
-        noteTitle.getBackground().setAlpha(editing ? 0xFF : 0x00);
+        Drawable bkg = noteTitle.getBackground();
+        if (bkg != null) bkg.setAlpha(editing ? 0xFF : 0x00);
     }
 
     private void switchPage() {

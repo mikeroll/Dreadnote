@@ -36,7 +36,7 @@ public class Dashboard extends Activity {
 
     public void onBtn(View view) {
         Intent i = new Intent(this, NoteScreen.class);
-        Note note = new Note("Welcome!", getResources().getColor(R.color.note_green),
+        Note note = new Note("Welcome!", getResources().getColor(R.color.note_yellow),
                 getResources().getString(R.string.debug_string));
         i.putExtra(ExtrasNames.NOTE, note);
         startActivityForResult(i, REQUEST_OPEN_NOTE);
