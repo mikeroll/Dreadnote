@@ -60,7 +60,7 @@ public class Editor extends Fragment {
     private OnNoteChangedListener mListener;
 
     public interface OnNoteChangedListener {
-        public void onNoteChanged(String newData);
+        public void onNoteContentChanged(final String newData);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class Editor extends Fragment {
             Runnable update = new Runnable() {
                 @Override
                 public void run() {
-                    mListener.onNoteChanged(editable.toString());
+                    mListener.onNoteContentChanged(editable.toString());
                 }
             };
             task = schex.schedule(update, TYPE_TIMEOUT, TimeUnit.MILLISECONDS);

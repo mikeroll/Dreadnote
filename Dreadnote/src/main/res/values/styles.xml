@@ -7,6 +7,12 @@
 
     <style name="NoteScreen" parent="@style/AppTheme">
         <item name="android:windowContentOverlay">@drawable/separator</item>
+        <item name="android:actionBarStyle">@style/NoteScreen.ActionBar</item>
+    </style>
+
+    <style name="NoteScreen.ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:displayOptions">showHome|showCustom</item>
+        <item name="android:background">#00000000</item>
     </style>
 
     <style name="EditorToolbarButton">
