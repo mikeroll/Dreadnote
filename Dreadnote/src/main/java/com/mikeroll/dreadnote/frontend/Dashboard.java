@@ -9,12 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.mikeroll.dreadnote.R;
-import com.mikeroll.dreadnote.storage.Note;
-
 
 public class Dashboard extends Activity {
-
-    public static final int REQUEST_OPEN_NOTE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +32,10 @@ public class Dashboard extends Activity {
 
     public void onBtn(View view) {
         Intent i = new Intent(this, NoteScreen.class);
-        Note note = new Note("Welcome!", getResources().getColor(R.color.note_yellow),
-                getResources().getString(R.string.debug_string));
-        i.putExtra(ExtrasNames.NOTE, note);
-        startActivityForResult(i, REQUEST_OPEN_NOTE);
-    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
+        i.putExtra(ExtrasNames.NOTE, "note0.note");
+        startActivity(i);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -55,10 +45,15 @@ public class Dashboard extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                openSettings();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openSettings() {
+        startActivity(new Intent(this, Settings.class));
     }
 }
