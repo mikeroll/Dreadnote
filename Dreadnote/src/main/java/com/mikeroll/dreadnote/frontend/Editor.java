@@ -46,7 +46,7 @@ public class Editor extends Fragment {
     public void onResume() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean showToolbar = prefs.getBoolean(getString(R.string.pref_toolbar), true);
-        toolbar.setVisibility(showToolbar ? View.VISIBLE : View.INVISIBLE);
+        toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
         super.onResume();
     }
 

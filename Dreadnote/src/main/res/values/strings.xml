@@ -9,9 +9,6 @@
     <string name="action_switch_mode">Switch mode</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- TODO: remove this -->
-    <string name="debug_string">**bold***italic*normal  </string>
-
     <!-- Toolbar icons -->
     <string name="toolbar_bold">Bold</string>
     <string name="toolbar_italic">Italic</string>

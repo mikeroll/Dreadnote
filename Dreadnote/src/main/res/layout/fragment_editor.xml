@@ -6,24 +6,29 @@
     android:orientation="vertical"
     tools:context="com.mikeroll.dreadnote.frontend.Editor">
 
-    <EditText
-            android:id="@+id/editor"
+    <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingLeft="@dimen/content_horizontal_margin"
-            android:paddingRight="@dimen/content_horizontal_margin"
-            android:paddingTop="@dimen/content_vertical_margin"
-            android:background="#00000000"
-            android:typeface="monospace"
-            android:inputType="textMultiLine"
-            android:gravity="top"
             android:scrollbars="vertical"
-            android:imeOptions="flagNoExtractUi"/>
-
+            android:fillViewport="true">
+        <EditText
+                android:id="@+id/editor"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/content_horizontal_margin"
+                android:paddingRight="@dimen/content_horizontal_margin"
+                android:paddingTop="@dimen/content_vertical_margin"
+                android:background="@android:color/transparent"
+                android:typeface="monospace"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:scrollbars="none"
+                android:imeOptions="flagNoExtractUi"/>
+    </ScrollView>
     <LinearLayout
             android:id="@+id/editor_toolbar"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
