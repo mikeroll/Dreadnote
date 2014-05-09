@@ -1,0 +1,10 @@
+body {
+    word-wrap: break-word;
+    font-size: large;
+}
+hr {
+    border: 0;
+    border-bottom: 1px dashed #333;
+    width: 96%;
+}
+

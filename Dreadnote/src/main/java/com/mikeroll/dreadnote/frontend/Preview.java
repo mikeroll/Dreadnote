@@ -18,6 +18,8 @@ public class Preview extends Fragment {
 
     private WebView webView;
 
+    private String html;
+
     /** Needed to process links not starting with "http://" */
     private static final String httpRedir = "http://re.dir/";
 
@@ -63,7 +65,7 @@ public class Preview extends Fragment {
     private AndDown converter = new AndDown();
 
     public void updateNotePresentation(String md) {
-        final String html = converter.markdownToHtml(md);
+        html = getCssLink() + converter.markdownToHtml(md);
         Activity a = getActivity();
         if (a != null) a.runOnUiThread(new Runnable() {
             @Override
@@ -71,5 +73,9 @@ public class Preview extends Fragment {
                 webView.loadDataWithBaseURL(httpRedir, html, "text/html; charset=UTF-8", null, null);
             }
         });
+    }
+
+    private static String getCssLink() {
+        return "<link rel=\"stylesheet\" href=\"file:///android_asset/note.css\" type=\"text/css\">";
     }
 }
