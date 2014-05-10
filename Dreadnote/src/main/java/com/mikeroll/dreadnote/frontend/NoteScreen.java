@@ -19,8 +19,10 @@ import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import com.google.gson.Gson;
 import com.mikeroll.dreadnote.R;
 import com.mikeroll.dreadnote.storage.Note;
@@ -72,7 +74,10 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         public void onColorChosen(int color) {
             if (note.getColor() != color) {
                 note.setColor(color);
-                ((ColorDrawable)ld.getDrawable(1)).setColor(color);
+                ColorDrawable cd = (ColorDrawable)ld.getDrawable(1);
+                int alpha = cd.getAlpha();
+                cd.setColor(color);
+                cd.setAlpha(alpha);
             }
         }
     };
@@ -219,6 +224,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         View anchor = findViewById(R.id.action_choose_color);
         View colorView = colorChooser.getContentView();
         colorView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        colorChooser.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
         colorChooser.showAsDropDown(anchor, anchor.getWidth() - colorView.getMeasuredWidth(), 0);
     }
 
