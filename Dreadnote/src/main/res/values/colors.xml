@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="note_blue_lt">#A8DFF4</color>
-    <color name="note_magenta_lt">#DDBCEE</color>
-    <color name="note_green_lt">#D3E992</color>
-    <color name="note_yellow">#FFBD21</color>
-    <color name="note_yellow_lt">#FFE3A0</color>
-    <color name="note_red_lt">#FFAFAF</color>
-    <color name="note_white">#FFFFFF</color>
+    <array name="note_colors">
+        <item>#33B5E5</item>
+        <item>#C58BE2</item>
+        <item>#99CC00</item>
+        <item>#FFBD21</item>
+        <item>#FF4444</item>
+        <item>#FFFFFF</item>
+        <item>#A8DFF4</item>
+        <item>#DDBCEE</item>
+        <item>#D3E992</item>
+        <item>#FFE3A0</item>
+        <item>#FFAFAF</item>
+        <item>#D9D9D9</item>
+    </array>
 </resources>

@@ -22,5 +22,4 @@
         <item name="android:background">?android:attr/actionBarItemBackground</item>
     </style>
 
-
 </resources>

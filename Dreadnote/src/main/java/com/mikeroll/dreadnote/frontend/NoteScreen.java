@@ -53,7 +53,6 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             } else /* if (position == EDITOR) */ {
                 ld.getDrawable(1).setAlpha((int) (0xFF * (positionOffset)));
             }
-            rootView.setBackgroundDrawable(ld);
         }
 
         @Override public void onPageSelected(int position) {}
@@ -63,11 +62,20 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private boolean isStickyKeyboardEnabled;
 
     // Interface stuff
-    private View rootView;
-    private ColorDrawable previewColor;
     private LayerDrawable ld;
     private EditText noteTitle;
     private Menu menu;
+
+    private ColorChooser colorChooser;
+    private ColorChooser.OnColorChosenListener mColorChosenListener = new ColorChooser.OnColorChosenListener() {
+        @Override
+        public void onColorChosen(int color) {
+            if (note.getColor() != color) {
+                note.setColor(color);
+                ((ColorDrawable)ld.getDrawable(1)).setColor(color);
+            }
+        }
+    };
 
     private Note note;
     private String notefile;
@@ -106,10 +114,12 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             });
         }
 
-        previewColor = new ColorDrawable(note.getColor());
-        ld = new LayerDrawable(new Drawable[]{new ColorDrawable(Color.WHITE), previewColor});
-        rootView = getWindow().getDecorView();
-        rootView.setBackgroundDrawable(ld);
+        ld = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
+        getWindow().getDecorView().setBackgroundDrawable(ld);
+
+        colorChooser = new ColorChooser(this);
+        colorChooser.readCurrentColor(note.getColor());
+        colorChooser.setOnColorChosenListener(mColorChosenListener);
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ModeSwitchAdapter(getFragmentManager());
@@ -146,6 +156,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
             case android.R.id.home:
                 onBackPressed();
                 return true;
+            case R.id.action_choose_color:
+                openColorChooser();
+                return true;
             case R.id.action_switch_mode:
                 switchPage();
                 return true;
@@ -169,24 +182,22 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     }
 
     private void setMode(int mode) {
-        if (mode == PREVIEW) {
+        boolean editing = (mode == EDITOR);
+        if (!editing) {
             ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
-            if (menu != null) {
-                menu.getItem(0).setIcon(R.drawable.ic_action_edit);
-            }
-        } else /* if (mode == EDITOR) */ {
+        } else /* if (editing) */ {
             EditText edit = (EditText) findViewById(R.id.editor);
             if (isStickyKeyboardEnabled && edit != null) {
                 edit.requestFocus();
                 ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                         .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
             }
-            if (menu != null) {
-                menu.getItem(0).setIcon(R.drawable.ic_action_accept);
-            }
         }
-        boolean editing = (mode == EDITOR);
+        MenuItem pencil;
+        if (menu != null && (pencil = menu.findItem(R.id.action_switch_mode)) != null) {
+            pencil.setIcon(editing ? R.drawable.ic_action_accept : R.drawable.ic_action_edit);
+        }
         noteTitle.setFocusable(editing);
         noteTitle.setFocusableInTouchMode(editing);
         noteTitle.setClickable(editing);
@@ -202,6 +213,13 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
 
     private void openSettings() {
         startActivity(new Intent(this, Settings.class));
+    }
+
+    private void openColorChooser() {
+        View anchor = findViewById(R.id.action_choose_color);
+        View colorView = colorChooser.getContentView();
+        colorView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        colorChooser.showAsDropDown(anchor, anchor.getWidth() - colorView.getMeasuredWidth(), 0);
     }
 
     @Override
