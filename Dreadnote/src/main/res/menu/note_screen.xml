@@ -12,9 +12,14 @@
           android:showAsAction="always"
           android:icon="@drawable/ic_action_edit" />
 
+    <item android:id="@+id/action_discard_changes"
+          android:title="@string/action_discard_changes"
+          android:showAsAction="never"
+          android:icon="@drawable/ic_action_cancel" />
+
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:orderInCategory="100"
-          android:showAsAction="ifRoom"
+          android:showAsAction="never"
           android:icon="@drawable/ic_action_settings"/>
 </menu>

@@ -2,6 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.mikeroll.dreadnote.frontend.Dashboard" >
 
+    <item android:id="@+id/action_new_note"
+          android:title="@string/action_new_note"
+          android:icon="@drawable/ic_action_new"
+          android:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"

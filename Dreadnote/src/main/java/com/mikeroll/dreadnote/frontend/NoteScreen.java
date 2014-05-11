@@ -126,6 +126,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
             case R.id.action_switch_mode:
                 switchPage();
                 return true;
+            case R.id.action_discard_changes:
+                super.finish();
+                return true;
             case R.id.action_settings:
                 openSettings();
                 return true;

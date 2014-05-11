@@ -77,6 +77,9 @@ public class Dashboard extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_new_note:
+                openNote(-1);
+                return true;
             case R.id.action_settings:
                 openSettings();
                 return true;

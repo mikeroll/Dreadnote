@@ -12,6 +12,8 @@
     <string name="action_choose_color">Choose color</string>
     <string name="action_switch_mode">Switch mode</string>
     <string name="action_share">Share</string>
+    <string name="action_new_note">New note</string>
+    <string name="action_discard_changes">Discard changes</string>
     <string name="action_settings">Settings</string>
 
     <!-- Toolbar icons -->
