@@ -35,23 +35,21 @@ public class Preview extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_preview, container, false);
-        if (v != null) {
-            v.findViewById(R.id.preview).setBackgroundColor(0);
-            webView = (WebView) v.findViewById(R.id.preview);
-            webView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    if (url.startsWith("note:")) {
-                        //TODO: well, implement.
-                        Toast.makeText(getActivity(), "Note linking not yet implemented.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        url = url.replace(httpRedir, "http://");
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                    }
-                    return true;
+        v.findViewById(R.id.preview).setBackgroundColor(0);
+        webView = (WebView) v.findViewById(R.id.preview);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("note:")) {
+                    //TODO: well, implement.
+                    Toast.makeText(getActivity(), "Note linking not yet implemented.", Toast.LENGTH_SHORT).show();
+                } else {
+                    url = url.replace(httpRedir, "http://");
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                 }
-            });
-        }
+                return true;
+            }
+        });
         return v;
     }
 

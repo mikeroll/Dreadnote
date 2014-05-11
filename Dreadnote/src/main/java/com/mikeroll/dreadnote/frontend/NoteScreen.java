@@ -19,18 +19,18 @@ import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import com.google.gson.Gson;
 import com.mikeroll.dreadnote.R;
 import com.mikeroll.dreadnote.storage.Note;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
 
-public class NoteScreen extends Activity implements Editor.OnNoteChangedListener  {
+public class NoteScreen extends Activity implements Editor.OnNoteChangeListener  {
 
     private static final int PAGES = 2;
     private static final int PREVIEW = 0;
@@ -39,48 +39,15 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     private Preview preview = new Preview();
     private Editor editor = new Editor();
 
-    private ViewPager mPager;
-    private ModeSwitchAdapter mPagerAdapter;
-    private ViewPager.OnPageChangeListener mPageChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            if (state == ViewPager.SCROLL_STATE_IDLE) {
-                setMode(mPager.getCurrentItem());
-            }
-        }
-
-        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            if (position == PREVIEW) {
-                ld.getDrawable(1).setAlpha((int) (0xFF * (1 - positionOffset)));
-            } else /* if (position == EDITOR) */ {
-                ld.getDrawable(1).setAlpha((int) (0xFF * (positionOffset)));
-            }
-        }
-
-        @Override public void onPageSelected(int position) {}
-    };
-
     // Preferences
     private boolean isStickyKeyboardEnabled;
 
     // Interface stuff
-    private LayerDrawable ld;
+    private ViewPager mPager;
+    private ColorChooser colorChooser;
     private EditText noteTitle;
     private Menu menu;
-
-    private ColorChooser colorChooser;
-    private ColorChooser.OnColorChosenListener mColorChosenListener = new ColorChooser.OnColorChosenListener() {
-        @Override
-        public void onColorChosen(int color) {
-            if (note.getColor() != color) {
-                note.setColor(color);
-                ColorDrawable cd = (ColorDrawable)ld.getDrawable(1);
-                int alpha = cd.getAlpha();
-                cd.setColor(color);
-                cd.setAlpha(alpha);
-            }
-        }
-    };
+    private LayerDrawable bkg;
 
     private Note note;
     private String notefile;
@@ -98,38 +65,22 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         note = loadNote();
 
         ActionBar ab = getActionBar();
-        if (ab != null) {
-            ab.setCustomView(R.layout.note_title);
-            ab.setDisplayUseLogoEnabled(true);
-            noteTitle = (EditText) ab.getCustomView().findViewById(R.id.note_title);
-            noteTitle.setText(note.getTitle());
-            noteTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean hasFocus) {
-                    if (!hasFocus) {
-                        Editable newTitle = noteTitle.getText();
-                        //TODO: expand validation
-                        if (newTitle != null && newTitle.length() != 0) {
-                            note.setTitle(newTitle.toString());
-                        } else {
-                            noteTitle.setText(note.getTitle());
-                        }
-                    }
-                }
-            });
-        }
+        ab.setCustomView(R.layout.note_title);
+        ab.setDisplayUseLogoEnabled(true);
+        noteTitle = (EditText) ab.getCustomView().findViewById(R.id.note_title);
+        noteTitle.setText(note.getTitle());
+        noteTitle.setOnFocusChangeListener(new OnTitleFocusChangeListener());
 
-        ld = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
-        getWindow().getDecorView().setBackgroundDrawable(ld);
+        bkg = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
+        getWindow().getDecorView().setBackgroundDrawable(bkg);
 
         colorChooser = new ColorChooser(this);
         colorChooser.readCurrentColor(note.getColor());
-        colorChooser.setOnColorChosenListener(mColorChosenListener);
+        colorChooser.setOnColorChooseListener(new OnColorChooseListener());
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ModeSwitchAdapter(getFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setOnPageChangeListener(mPageChangeListener);
+        mPager.setAdapter(new ModeSwitchAdapter(getFragmentManager()));
+        mPager.setOnPageChangeListener(new OnModeSwitchListener());
 
         if (savedInstanceState != null) {
             int mode = savedInstanceState.getInt("mode");
@@ -175,7 +126,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mode", mPager.getCurrentItem());
     }
@@ -231,7 +182,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
     @Override
     public void onNoteContentChanged(final String newData) {
         note.setContent(newData);
-        Preview preview = (Preview) mPagerAdapter.instantiateItem(mPager, 0);
+        Preview preview = (Preview) mPager.getAdapter().instantiateItem(mPager, 0);
         preview.updateNotePresentation(newData);
     }
 
@@ -282,6 +233,53 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangedListener
         @Override
         public int getCount() {
             return PAGES;
+        }
+    }
+
+    private class OnModeSwitchListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if (state == ViewPager.SCROLL_STATE_IDLE) {
+                setMode(mPager.getCurrentItem());
+            }
+        }
+
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position == PREVIEW) {
+                bkg.getDrawable(1).setAlpha((int) (0xFF * (1 - positionOffset)));
+            } else /* if (position == EDITOR) */ {
+                bkg.getDrawable(1).setAlpha((int) (0xFF * (positionOffset)));
+            }
+        }
+
+        @Override public void onPageSelected(int position) {}
+    }
+
+    private class OnTitleFocusChangeListener implements EditText.OnFocusChangeListener {
+        @Override
+        public void onFocusChange(View view, boolean hasFocus) {
+            if (!hasFocus) {
+                Editable newTitle = ((EditText)view).getText();
+                //TODO: expand validation
+                if (newTitle != null && newTitle.length() != 0) {
+                    note.setTitle(newTitle.toString());
+                } else {
+                    ((EditText)view).setText(note.getTitle());
+                }
+            }
+        }
+    }
+
+    private class OnColorChooseListener implements ColorChooser.OnColorChooseListener {
+        @Override
+        public void onColorChoose(int color) {
+            if (note.getColor() != color) {
+                note.setColor(color);
+                ColorDrawable cd = (ColorDrawable) bkg.getDrawable(1);
+                int alpha = cd.getAlpha();
+                cd.setColor(color);
+                cd.setAlpha(alpha);
+            }
         }
     }
 }

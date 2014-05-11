@@ -14,8 +14,9 @@ import com.mikeroll.dreadnote.R;
 public class ColorChooser extends PopupWindow {
 
     private Context mContext;
-    private OnColorChosenListener mOnColorChosenListener;
+    private OnColorChooseListener mOnColorChooseListener;
     private RadioButton mCheckedButton;
+    private OnColorButtonCheckedChangeListener mOnCheckedListener = new OnColorButtonCheckedChangeListener();
     private LinearLayout[] rows = new LinearLayout[2];
 
     @SuppressLint("InflateParams")
@@ -42,7 +43,7 @@ public class ColorChooser extends PopupWindow {
     private RadioButton newButton(int color) {
         RadioButton btn = (RadioButton)LayoutInflater.from(mContext).inflate(R.layout.color_button, null);
         btn.setBackgroundColor(color);
-        btn.setOnCheckedChangeListener(onCheckedListener);
+        btn.setOnCheckedChangeListener(mOnCheckedListener);
         return btn;
     }
 
@@ -60,7 +61,19 @@ public class ColorChooser extends PopupWindow {
 
     private boolean mProtectFromRecursion = false;
 
-    private RadioButton.OnCheckedChangeListener onCheckedListener = new RadioButton.OnCheckedChangeListener() {
+    public OnColorChooseListener getOnColorChooseListener() {
+        return mOnColorChooseListener;
+    }
+
+    public void setOnColorChooseListener(OnColorChooseListener listener) {
+        this.mOnColorChooseListener = listener;
+    }
+
+    interface OnColorChooseListener {
+        void onColorChoose(int color);
+    }
+
+    private class OnColorButtonCheckedChangeListener implements RadioButton.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
             if (checked) {
@@ -75,22 +88,10 @@ public class ColorChooser extends PopupWindow {
                 mCheckedButton = (RadioButton)compoundButton;
 
                 int color = ((ColorDrawable)compoundButton.getBackground()).getColor();
-                if (mOnColorChosenListener != null) {
-                    mOnColorChosenListener.onColorChosen(color);
+                if (mOnColorChooseListener != null) {
+                    mOnColorChooseListener.onColorChoose(color);
                 }
             }
         }
-    };
-
-    public OnColorChosenListener getOnColorChosenListener() {
-        return mOnColorChosenListener;
-    }
-
-    public void setOnColorChosenListener(OnColorChosenListener listener) {
-        this.mOnColorChosenListener = listener;
-    }
-
-    interface OnColorChosenListener {
-        void onColorChosen(int color);
     }
 }

@@ -23,6 +23,10 @@ public class Editor extends Fragment {
     private EditText edit;
     private View toolbar;
 
+    private OnNoteChangeListener mOnNoteChangeListener;
+
+    private static final int TYPE_TIMEOUT = 800;
+
     public Editor() { }
 
     @Override
@@ -35,9 +39,8 @@ public class Editor extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_editor, container, false);
-        assert v != null;
         edit = (EditText) v.findViewById(R.id.editor);
-        edit.addTextChangedListener(onTypingStoppedListener);
+        edit.addTextChangedListener(new OnTypingStoppedListener());
         toolbar = v.findViewById(R.id.editor_toolbar);
         return v;
     }
@@ -56,22 +59,17 @@ public class Editor extends Fragment {
         String initialData = ((NoteScreen)getActivity()).getNote().getContent();
         edit.append(initialData);
     }
-
-    private OnNoteChangedListener mListener;
-
-    public interface OnNoteChangedListener {
+    public interface OnNoteChangeListener {
         public void onNoteContentChanged(final String newData);
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mListener = (OnNoteChangedListener) activity;
+        mOnNoteChangeListener = (OnNoteChangeListener) activity;
     }
 
-    private static final int TYPE_TIMEOUT = 800;
-
-    private final TextWatcher onTypingStoppedListener = new TextWatcher() {
+    private class OnTypingStoppedListener implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int before, int count) { }
         @Override
@@ -85,10 +83,10 @@ public class Editor extends Fragment {
             Runnable update = new Runnable() {
                 @Override
                 public void run() {
-                    mListener.onNoteContentChanged(editable.toString());
+                    mOnNoteChangeListener.onNoteContentChanged(editable.toString());
                 }
             };
             task = schex.schedule(update, TYPE_TIMEOUT, TimeUnit.MILLISECONDS);
         }
-    };
+    }
 }
