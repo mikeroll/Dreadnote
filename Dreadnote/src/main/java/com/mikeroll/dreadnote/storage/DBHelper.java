@@ -1,5 +1,6 @@
 package com.mikeroll.dreadnote.storage;
 
+import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -20,7 +21,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + DBContract.Note.TABLE;
 
-    public DBHelper(Context context) {
+    private static DBHelper mInstance;
+
+    public static DBHelper getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new DBHelper(context.getApplicationContext());
+        }
+        return mInstance;
+    }
+
+    private DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

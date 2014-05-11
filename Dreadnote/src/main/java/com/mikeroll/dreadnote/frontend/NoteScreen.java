@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -22,12 +21,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.PopupWindow;
-import com.google.gson.Gson;
 import com.mikeroll.dreadnote.R;
-import com.mikeroll.dreadnote.storage.Note;
+import com.mikeroll.dreadnote.entity.Note;
+import com.mikeroll.dreadnote.storage.DBClient;
+import com.mikeroll.dreadnote.storage.DBHelper;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.*;
 
 
 public class NoteScreen extends Activity implements Editor.OnNoteChangeListener  {
@@ -49,20 +47,30 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     private Menu menu;
     private LayerDrawable bkg;
 
+    // Entity/db stuff
+    private long note_id;
     private Note note;
-    private String notefile;
 
     public Note getNote() {
         return note;
     }
+
+    private DBClient mDBClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
 
-        notefile = getIntent().getStringExtra(ExtrasNames.NOTE);
-        note = loadNote();
+        mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
+
+        note_id = getIntent().getLongExtra(ExtrasNames.NOTE_ID, -1);
+        if (note_id != -1) {
+            note = mDBClient.readNote(note_id);
+        } else {
+            note = new Note(getResources().getString(R.string.new_note_name));
+        }
 
         ActionBar ab = getActionBar();
         ab.setCustomView(R.layout.note_title);
@@ -133,7 +141,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
     @Override
     public void finish() {
-        saveNote(note);
+        mDBClient.addOrUpdateNote(note_id, note);
         super.finish();
     }
 
@@ -184,36 +192,6 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         note.setContent(newData);
         Preview preview = (Preview) mPager.getAdapter().instantiateItem(mPager, 0);
         preview.updateNotePresentation(newData);
-    }
-
-    // TODO: Make these async, probably
-    public Note loadNote() {
-        String j = null;
-        try {
-            InputStreamReader input = new InputStreamReader(openFileInput(this.notefile));
-            BufferedReader bufferedReader = new BufferedReader(input);
-            String line;
-            StringBuilder stringBuilder = new StringBuilder();
-            while ( (line = bufferedReader.readLine()) != null ) {
-                stringBuilder.append(line);
-            }
-            input.close();
-            j = stringBuilder.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new Gson().fromJson(j, Note.class);
-    }
-
-    public void saveNote(Note note) {
-        String json = new Gson().toJson(note);
-        try {
-            OutputStreamWriter output = new OutputStreamWriter(openFileOutput(this.notefile, Context.MODE_PRIVATE));
-            output.write(json);
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private class ModeSwitchAdapter extends FragmentStatePagerAdapter {

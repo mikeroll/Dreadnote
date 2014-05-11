@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Titles -->
     <string name="app_name">Dreadnote</string>
     <string name="title_activity_note_screen">Note</string>
     <string name="editor_fragment">Editor</string>
@@ -30,5 +31,8 @@
 
     <!-- Messages -->
     <string name="error_empty_title">Title cannot be empty!</string>
+
+    <!-- Placeholders -->
+    <string name="new_note_name">Untitled</string>
 
 </resources>

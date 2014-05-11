@@ -13,17 +13,6 @@ public class DBClient {
         mDBHelper = dbHelper;
     }
 
-    public long createNote(Note note) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
-
-        ContentValues entry = new ContentValues();
-        entry.put(DBContract.Note.COL_TITLE, note.getTitle());
-        entry.put(DBContract.Note.COL_COLOR, note.getColor());
-        entry.put(DBContract.Note.COL_CONTENT, note.getContent());
-
-        return db.insert(DBContract.Note.TABLE, null, entry);
-    }
-
     public Note readNote(long id) {
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
@@ -39,19 +28,25 @@ public class DBClient {
         }
     }
 
-    public long updateNote(long id, Note note) {
+    public long addOrUpdateNote(long id, Note note) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
 
         ContentValues entry = new ContentValues();
+        if (id != -1) entry.put(DBContract.Note._ID, id);
         entry.put(DBContract.Note.COL_TITLE, note.getTitle());
         entry.put(DBContract.Note.COL_COLOR, note.getColor());
         entry.put(DBContract.Note.COL_CONTENT, note.getContent());
 
-        return db.update(DBContract.Note.TABLE, entry, DBContract.Note._ID + " = ?", new String[] { Long.toString(id) });
+        return db.insertWithOnConflict(DBContract.Note.TABLE, null, entry, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public void deleteNote(long id) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         db.delete(DBContract.Note.TABLE, DBContract.Note._ID + " = ?", new String[] { Long.toString(id) });
+    }
+
+    public Cursor selectAll() {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM " + DBContract.Note.TABLE, null);
     }
 }
