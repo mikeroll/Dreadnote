@@ -8,9 +8,8 @@ import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.util.SparseBooleanArray;
+import android.view.*;
 import android.widget.*;
 import com.mikeroll.dreadnote.R;
 import com.mikeroll.dreadnote.storage.DBClient;
@@ -19,6 +18,7 @@ import com.mikeroll.dreadnote.storage.DBHelper;
 public class Dashboard extends Activity {
 
     private DBClient mDBClient;
+    private ListView noteList;
     private ResourceCursorAdapter noteListAdapter;
 
     @Override
@@ -28,7 +28,7 @@ public class Dashboard extends Activity {
 
         setContentView(R.layout.activity_dashboard);
 
-        ListView noteList = (ListView) findViewById(R.id.note_list);
+        noteList = (ListView) findViewById(R.id.note_list);
         noteListAdapter  = new ResourceCursorAdapter(this, R.layout.list_item, null, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
@@ -42,6 +42,7 @@ public class Dashboard extends Activity {
         };
         noteList.setAdapter(noteListAdapter);
         noteList.setOnItemClickListener(new OnNoteClickListener());
+        noteList.setMultiChoiceModeListener(new NotePickListener());
 
         mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
     }
@@ -97,11 +98,57 @@ public class Dashboard extends Activity {
         startActivity(intent);
     }
 
+    private void deleteSelected() {
+        SparseBooleanArray selected = noteList.getCheckedItemPositions();
+        if (selected != null) {
+            for (int i = 0; i < noteListAdapter.getCount(); i++) {
+                if (selected.get(i)) {
+                    long id = ((Cursor)noteListAdapter.getItem(i)).getLong(0);
+                    mDBClient.deleteNote(id);
+                }
+            }
+            updateList();
+        }
+    }
+
     private class OnNoteClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             int id = (Integer)view.getTag();
             openNote(id);
         }
+    }
+
+    private class NotePickListener implements AbsListView.MultiChoiceModeListener {
+
+        @Override
+        public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {}
+
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            MenuInflater inflater = actionMode.getMenuInflater();
+            inflater.inflate(R.menu.notelist_context, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_delete:
+                    deleteSelected();
+                    actionMode.finish();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {}
     }
 }
