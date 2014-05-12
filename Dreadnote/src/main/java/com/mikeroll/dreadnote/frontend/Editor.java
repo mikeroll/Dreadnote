@@ -39,6 +39,7 @@ public class Editor extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_editor, container, false);
+        //noinspection ConstantConditions
         edit = (EditText) v.findViewById(R.id.editor);
         edit.addTextChangedListener(new OnTypingStoppedListener());
         toolbar = v.findViewById(R.id.editor_toolbar);
@@ -47,6 +48,7 @@ public class Editor extends Fragment {
 
     @Override
     public void onResume() {
+        //noinspection ConstantConditions
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean showToolbar = prefs.getBoolean(getString(R.string.pref_toolbar), true);
         toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
@@ -56,6 +58,7 @@ public class Editor extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //noinspection ConstantConditions
         String initialData = ((NoteScreen)getActivity()).getNote().getContent();
         edit.append(initialData);
     }

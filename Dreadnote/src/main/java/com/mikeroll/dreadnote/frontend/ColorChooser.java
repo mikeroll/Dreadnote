@@ -19,6 +19,7 @@ public class ColorChooser extends PopupWindow {
     private OnColorButtonCheckedChangeListener mOnCheckedListener = new OnColorButtonCheckedChangeListener();
     private LinearLayout[] rows = new LinearLayout[2];
 
+    @SuppressWarnings("ConstantConditions")
     @SuppressLint("InflateParams")
     public ColorChooser(Context context) {
         super(context);
@@ -39,6 +40,7 @@ public class ColorChooser extends PopupWindow {
         setFocusable(true);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @SuppressLint("InflateParams")
     private RadioButton newButton(int color) {
         RadioButton btn = (RadioButton)LayoutInflater.from(mContext).inflate(R.layout.color_button, null);
@@ -51,6 +53,7 @@ public class ColorChooser extends PopupWindow {
         for (LinearLayout row : rows) {
             for (int i = 0; i < row.getChildCount(); i++) {
                 RadioButton btn = (RadioButton)row.getChildAt(i);
+                //noinspection ConstantConditions
                 if (color == ((ColorDrawable)btn.getBackground()).getColor()) {
                     btn.setChecked(true);
                     return;
@@ -87,6 +90,7 @@ public class ColorChooser extends PopupWindow {
                 mProtectFromRecursion = false;
                 mCheckedButton = (RadioButton)compoundButton;
 
+                //noinspection ConstantConditions
                 int color = ((ColorDrawable)compoundButton.getBackground()).getColor();
                 if (mOnColorChooseListener != null) {
                     mOnColorChooseListener.onColorChoose(color);
