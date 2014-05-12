@@ -57,6 +57,10 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
     private DBClient mDBClient;
 
+    public DBClient getDBClient() {
+        return mDBClient;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

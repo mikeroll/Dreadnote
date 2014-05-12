@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.commonsware.cwac.anddown.AndDown;
 import com.mikeroll.dreadnote.R;
 
+import java.util.NoSuchElementException;
+
 public class Preview extends Fragment {
 
     private WebView webView;
@@ -37,19 +39,7 @@ public class Preview extends Fragment {
         View v = inflater.inflate(R.layout.fragment_preview, container, false);
         v.findViewById(R.id.preview).setBackgroundColor(0);
         webView = (WebView) v.findViewById(R.id.preview);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.startsWith("note:")) {
-                    //TODO: well, implement.
-                    Toast.makeText(getActivity(), "Note linking not yet implemented.", Toast.LENGTH_SHORT).show();
-                } else {
-                    url = url.replace(httpRedir, "http://");
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-                }
-                return true;
-            }
-        });
+        webView.setWebViewClient(new NoteViewClient());
         return v;
     }
 
@@ -75,5 +65,36 @@ public class Preview extends Fragment {
 
     private static String getCssLink() {
         return "<link rel=\"stylesheet\" href=\"file:///android_asset/note.css\" type=\"text/css\">";
+    }
+
+    private class NoteViewClient extends WebViewClient {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.startsWith("note:")) {
+                try {
+                    jumpToNote(url);
+                } catch (NoSuchElementException e) {
+                    Toast.makeText(getActivity(), "Linked note not found!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                url = url.replace(httpRedir, "http://");
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+            return true;
+        }
+
+        private void jumpToNote(final String url) {
+            try {
+                long id = Long.parseLong(url.substring(5));
+                if (((NoteScreen) getActivity()).getDBClient().exists(id)) {
+                    Intent intent = new Intent(getActivity(), NoteScreen.class);
+                    intent.putExtra(ExtrasNames.NOTE_ID, id);
+                    startActivity(intent);
+                }
+            } catch (NumberFormatException e) {
+                throw new NoSuchElementException();
+            }
+        }
     }
 }

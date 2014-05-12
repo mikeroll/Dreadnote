@@ -45,6 +45,15 @@ public class DBClient {
         db.delete(DBContract.Note.TABLE, DBContract.Note._ID + " = ?", new String[] { Long.toString(id) });
     }
 
+    public boolean exists(long id) {
+        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        return db.rawQuery(
+                "SELECT 1 FROM " + DBContract.Note.TABLE +
+                " WHERE " + DBContract.Note._ID + " =?",
+                new String[] { Long.toString(id) }
+        ).getCount() > 0;
+    }
+
     public Cursor selectAll() {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + DBContract.Note.TABLE, null);
