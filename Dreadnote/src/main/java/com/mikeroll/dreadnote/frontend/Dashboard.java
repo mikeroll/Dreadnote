@@ -46,7 +46,7 @@ public class Dashboard extends Activity {
         noteList.setOnItemClickListener(new OnNoteClickListener());
         noteList.setMultiChoiceModeListener(new NotePickListener());
 
-        mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
+        mDBClient = new DBClient(DBHelper.connect(getApplicationContext()));
     }
 
     private void performFirstRunConfig() {
@@ -90,6 +90,12 @@ public class Dashboard extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        DBHelper.disconnect();
+        super.onDestroy();
+    }
+
     private void openSettings() {
         startActivity(new Intent(this, Settings.class));
     }
@@ -106,7 +112,7 @@ public class Dashboard extends Activity {
             ArrayList<Long> ids = new ArrayList<Long>();
             for (int i = 0; i < noteListAdapter.getCount(); i++) {
                 if (selected.get(i)) {
-                    ids.add(((Cursor)noteListAdapter.getItem(i)).getLong(0));
+                    ids.add(((Cursor) noteListAdapter.getItem(i)).getLong(0));
                 }
             }
             mDBClient.deleteNotes(ids);

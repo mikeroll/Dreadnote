@@ -20,17 +20,31 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + DBContract.Note.TABLE;
 
-    private static DBHelper mInstance;
+    private static DBHelper mInstance = null;
+    private static SQLiteDatabase db = null;
 
-    public static DBHelper getInstance(Context context) {
+    private DBHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static DBHelper connect(Context context) {
         if (mInstance == null) {
             mInstance = new DBHelper(context.getApplicationContext());
+            db = mInstance.getWritableDatabase();
         }
         return mInstance;
     }
 
-    private DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public static void disconnect() {
+        if (mInstance != null) {
+            mInstance.close();
+            mInstance = null;
+            db = null;
+        }
+    }
+
+    public SQLiteDatabase getDB() {
+        return db;
     }
 
     public void onCreate(SQLiteDatabase db) {

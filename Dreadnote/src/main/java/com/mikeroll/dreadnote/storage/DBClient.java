@@ -17,7 +17,7 @@ public class DBClient {
     }
 
     public Note readNote(long id) {
-        SQLiteDatabase db = mDBHelper.getReadableDatabase();
+        SQLiteDatabase db = mDBHelper.getDB();
 
         Cursor cursor = db.rawQuery(
                 "SELECT * FROM " + DBContract.Note.TABLE + " WHERE " + DBContract.Note._ID + " = ?",
@@ -32,7 +32,7 @@ public class DBClient {
     }
 
     public long addOrUpdateNote(long id, Note note) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        SQLiteDatabase db = mDBHelper.getDB();
 
         ContentValues entry = new ContentValues();
         if (id != -1) entry.put(DBContract.Note._ID, id);
@@ -44,13 +44,13 @@ public class DBClient {
     }
 
     public void deleteNotes(ArrayList<Long> ids) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        SQLiteDatabase db = mDBHelper.getDB();
         String args = TextUtils.join(",", ids);
         db.execSQL(String.format("DELETE FROM %s WHERE %s IN (%s)", DBContract.Note.TABLE, DBContract.Note._ID, args));
     }
 
     public boolean exists(long id) {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        SQLiteDatabase db = mDBHelper.getDB();
         return db.rawQuery(
                 "SELECT 1 FROM " + DBContract.Note.TABLE +
                 " WHERE " + DBContract.Note._ID + " =?",
@@ -59,7 +59,7 @@ public class DBClient {
     }
 
     public Cursor selectAll() {
-        SQLiteDatabase db = mDBHelper.getWritableDatabase();
+        SQLiteDatabase db = mDBHelper.getDB();
         return db.rawQuery("SELECT * FROM " + DBContract.Note.TABLE, null);
     }
 }

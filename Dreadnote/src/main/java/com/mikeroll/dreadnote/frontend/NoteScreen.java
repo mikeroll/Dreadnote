@@ -80,7 +80,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         colorChooser = new ColorChooser(this);
         colorChooser.setOnColorChooseListener(new OnColorChooseListener());
 
-        mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
+        mDBClient = new DBClient(DBHelper.connect(getApplicationContext()));
 
         int mode;
         if (savedInstanceState != null) {
