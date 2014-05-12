@@ -102,14 +102,19 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         bkg = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
         getWindow().getDecorView().setBackgroundDrawable(bkg);
 
+        readPrefs();
         mPager.setCurrentItem(mode);
         setMode(mode);
     }
 
-    @Override
-    protected void onResume() {
+    private void readPrefs() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         isStickyKeyboardEnabled = prefs.getBoolean(getString(R.string.pref_sticky_keyboard), true);
+    }
+
+    @Override
+    protected void onResume() {
+        readPrefs();
         super.onResume();
     }
 
