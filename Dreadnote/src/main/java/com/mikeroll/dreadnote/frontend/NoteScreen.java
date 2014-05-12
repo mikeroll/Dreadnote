@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -63,6 +62,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     }
 
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,25 +82,28 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
         mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
 
+        int mode;
         if (savedInstanceState != null) {
             note = savedInstanceState.getParcelable("note");
-            int mode = savedInstanceState.getInt("mode");
-            setMode(mode);
+            mode = savedInstanceState.getInt("mode");
         } else {
             note_id = getIntent().getLongExtra(ExtrasNames.NOTE_ID, -1);
             if (note_id != -1) {
                 note = mDBClient.readNote(note_id);
-                setMode(PREVIEW);
+                mode = PREVIEW;
             } else {
                 note = new Note(getResources().getString(R.string.new_note_name));
-                setMode(EDITOR);
+                mode = EDITOR;
             }
         }
+
         noteTitle.setText(note.getTitle());
         colorChooser.readCurrentColor(note.getColor());
         bkg = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
         getWindow().getDecorView().setBackgroundDrawable(bkg);
 
+        mPager.setCurrentItem(mode);
+        setMode(mode);
     }
 
     @Override
@@ -164,7 +167,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         noteTitle.setClickable(editing);
         Drawable bkg = noteTitle.getBackground();
         if (bkg != null) bkg.setAlpha(editing ? 0xFF : 0x00);
-        mPager.setCurrentItem(mode);
+        showKeyboard(isStickyKeyboardEnabled && mPager.getCurrentItem() == EDITOR);
     }
 
     private void showKeyboard(boolean show) {
@@ -181,9 +184,8 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     }
 
     private void switchPage() {
-        int current = mPager.getCurrentItem();
-        int next = (current == PREVIEW) ? EDITOR : PREVIEW;
-        setMode(next);
+        int next = (mPager.getCurrentItem() == PREVIEW) ? EDITOR : PREVIEW;
+        mPager.setCurrentItem(next);
     }
 
     private void openSettings() {
@@ -226,10 +228,11 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     }
 
     private class OnModeSwitchListener implements ViewPager.OnPageChangeListener {
+
         @Override
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
-                showKeyboard(isStickyKeyboardEnabled && mPager.getCurrentItem() == EDITOR);
+                setMode(mPager.getCurrentItem());
             }
         }
 
