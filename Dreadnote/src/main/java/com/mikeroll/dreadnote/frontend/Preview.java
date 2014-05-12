@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,9 @@ public class Preview extends Fragment {
         v.findViewById(R.id.preview).setBackgroundColor(0);
         webView = (WebView) v.findViewById(R.id.preview);
         webView.setWebViewClient(new NoteViewClient());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
         return v;
     }
 
@@ -58,7 +62,7 @@ public class Preview extends Fragment {
         if (a != null) a.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                webView.loadDataWithBaseURL(httpRedir, html, "text/html; charset=UTF-8", null, null);
+                webView.loadDataWithBaseURL(httpRedir, html, "text/html", "UTF-8", null);
             }
         });
     }

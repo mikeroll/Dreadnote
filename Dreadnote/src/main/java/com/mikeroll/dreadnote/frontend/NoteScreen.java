@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -67,41 +68,39 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_screen);
 
-        mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
-
-        note_id = getIntent().getLongExtra(ExtrasNames.NOTE_ID, -1);
-        if (note_id != -1) {
-            note = mDBClient.readNote(note_id);
-        } else {
-            note = new Note(getResources().getString(R.string.new_note_name));
-        }
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setAdapter(new ModeSwitchAdapter(getFragmentManager()));
+        mPager.setOnPageChangeListener(new OnModeSwitchListener());
 
         ActionBar ab = getActionBar();
         ab.setCustomView(R.layout.note_title);
         ab.setDisplayUseLogoEnabled(true);
         noteTitle = (EditText) ab.getCustomView().findViewById(R.id.note_title);
-        noteTitle.setText(note.getTitle());
         noteTitle.setOnFocusChangeListener(new OnTitleFocusChangeListener());
+        colorChooser = new ColorChooser(this);
+        colorChooser.setOnColorChooseListener(new OnColorChooseListener());
 
+        mDBClient = new DBClient(DBHelper.getInstance(getApplicationContext()));
+
+        if (savedInstanceState != null) {
+            note = savedInstanceState.getParcelable("note");
+            int mode = savedInstanceState.getInt("mode");
+            setMode(mode);
+        } else {
+            note_id = getIntent().getLongExtra(ExtrasNames.NOTE_ID, -1);
+            if (note_id != -1) {
+                note = mDBClient.readNote(note_id);
+                setMode(PREVIEW);
+            } else {
+                note = new Note(getResources().getString(R.string.new_note_name));
+                setMode(EDITOR);
+            }
+        }
+        noteTitle.setText(note.getTitle());
+        colorChooser.readCurrentColor(note.getColor());
         bkg = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
         getWindow().getDecorView().setBackgroundDrawable(bkg);
 
-        colorChooser = new ColorChooser(this);
-        colorChooser.readCurrentColor(note.getColor());
-        colorChooser.setOnColorChooseListener(new OnColorChooseListener());
-
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setAdapter(new ModeSwitchAdapter(getFragmentManager()));
-        mPager.setOnPageChangeListener(new OnModeSwitchListener());
-
-        if (savedInstanceState != null) {
-            int mode = savedInstanceState.getInt("mode");
-            mPager.setCurrentItem(mode);
-            setMode(mode);
-        } else {
-            mPager.setCurrentItem(PREVIEW);
-            setMode(PREVIEW);
-        }
     }
 
     @Override
@@ -144,6 +143,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mode", mPager.getCurrentItem());
+        outState.putParcelable("note", note);
     }
 
     @Override
@@ -155,17 +155,6 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
     private void setMode(int mode) {
         boolean editing = (mode == EDITOR);
-        if (!editing) {
-            ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(mPager.getWindowToken(), 0);
-        } else /* if (editing) */ {
-            EditText edit = (EditText) findViewById(R.id.editor);
-            if (isStickyKeyboardEnabled && edit != null) {
-                edit.requestFocus();
-                ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                        .showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
-            }
-        }
         MenuItem pencil;
         if (menu != null && (pencil = menu.findItem(R.id.action_switch_mode)) != null) {
             pencil.setIcon(editing ? R.drawable.ic_action_accept : R.drawable.ic_action_edit);
@@ -175,12 +164,26 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         noteTitle.setClickable(editing);
         Drawable bkg = noteTitle.getBackground();
         if (bkg != null) bkg.setAlpha(editing ? 0xFF : 0x00);
+        mPager.setCurrentItem(mode);
+    }
+
+    private void showKeyboard(boolean show) {
+        InputMethodManager imm = ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE));
+        if (show) {
+            EditText edit = (EditText) findViewById(R.id.editor);
+            if (edit != null) {
+                edit.requestFocus();
+                imm.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
+            }
+        } else {
+            imm.hideSoftInputFromWindow(mPager.getWindowToken(), 0);
+        }
     }
 
     private void switchPage() {
         int current = mPager.getCurrentItem();
         int next = (current == PREVIEW) ? EDITOR : PREVIEW;
-        mPager.setCurrentItem(next);
+        setMode(next);
     }
 
     private void openSettings() {
@@ -226,7 +229,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         @Override
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
-                setMode(mPager.getCurrentItem());
+                showKeyboard(isStickyKeyboardEnabled && mPager.getCurrentItem() == EDITOR);
             }
         }
 
