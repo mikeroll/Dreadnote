@@ -3,7 +3,10 @@ package com.mikeroll.dreadnote.storage;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import com.mikeroll.dreadnote.entity.Note;
+
+import java.util.ArrayList;
 
 public class DBClient {
 
@@ -40,9 +43,10 @@ public class DBClient {
         return db.insertWithOnConflict(DBContract.Note.TABLE, null, entry, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void deleteNote(long id) {
+    public void deleteNotes(ArrayList<Long> ids) {
         SQLiteDatabase db = mDBHelper.getWritableDatabase();
-        db.delete(DBContract.Note.TABLE, DBContract.Note._ID + " = ?", new String[] { Long.toString(id) });
+        String args = TextUtils.join(",", ids);
+        db.execSQL(String.format("DELETE FROM %s WHERE %s IN (%s)", DBContract.Note.TABLE, DBContract.Note._ID, args));
     }
 
     public boolean exists(long id) {

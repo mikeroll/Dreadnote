@@ -15,6 +15,8 @@ import com.mikeroll.dreadnote.R;
 import com.mikeroll.dreadnote.storage.DBClient;
 import com.mikeroll.dreadnote.storage.DBHelper;
 
+import java.util.ArrayList;
+
 public class Dashboard extends Activity {
 
     private DBClient mDBClient;
@@ -101,12 +103,13 @@ public class Dashboard extends Activity {
     private void deleteSelected() {
         SparseBooleanArray selected = noteList.getCheckedItemPositions();
         if (selected != null) {
+            ArrayList<Long> ids = new ArrayList<Long>();
             for (int i = 0; i < noteListAdapter.getCount(); i++) {
                 if (selected.get(i)) {
-                    long id = ((Cursor)noteListAdapter.getItem(i)).getLong(0);
-                    mDBClient.deleteNote(id);
+                    ids.add(((Cursor)noteListAdapter.getItem(i)).getLong(0));
                 }
             }
+            mDBClient.deleteNotes(ids);
             updateList();
         }
     }
