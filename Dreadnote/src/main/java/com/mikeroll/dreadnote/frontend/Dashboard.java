@@ -131,7 +131,9 @@ public class Dashboard extends Activity {
     private class NotePickListener implements AbsListView.MultiChoiceModeListener {
 
         @Override
-        public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {}
+        public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {
+            actionMode.setTitle(String.format("%d %s", noteList.getCheckedItemCount(), getString(R.string.selected)));
+        }
 
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {

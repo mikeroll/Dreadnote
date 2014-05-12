@@ -35,6 +35,7 @@
     <!-- Messages -->
     <string name="error_link_invalid">Invalid link!</string>
     <string name="error_link_not_found">Linked note not found</string>
+    <string name="selected">selected</string>
 
     <!-- Placeholders -->
     <string name="new_note_name">Untitled</string>
