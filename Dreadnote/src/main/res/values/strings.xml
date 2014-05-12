@@ -33,7 +33,8 @@
     <string name="pref_sticky_keyboard_summary">Open on-screen keyboard when editor is focused</string>
 
     <!-- Messages -->
-    <string name="error_empty_title">Title cannot be empty!</string>
+    <string name="error_link_invalid">Invalid link!</string>
+    <string name="error_link_not_found">Linked note not found</string>
 
     <!-- Placeholders -->
     <string name="new_note_name">Untitled</string>

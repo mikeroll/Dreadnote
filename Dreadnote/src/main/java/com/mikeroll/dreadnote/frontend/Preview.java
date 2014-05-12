@@ -1,6 +1,5 @@
 package com.mikeroll.dreadnote.frontend;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
@@ -24,7 +23,8 @@ public class Preview extends Fragment {
     private String html;
 
     /** Needed to process links not starting with "http://" */
-    private static final String httpRedir = "http://re.dir/";
+    private static final String HTTP_REDIR = "http://re.dir/";
+    private static final String HTTP = "http://";
 
     public Preview() {}
 
@@ -38,12 +38,13 @@ public class Preview extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_preview, container, false);
-        v.findViewById(R.id.preview).setBackgroundColor(0);
+        //noinspection ConstantConditions
         webView = (WebView) v.findViewById(R.id.preview);
-        webView.setWebViewClient(new NoteViewClient());
+        webView.setBackgroundColor(0);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+        webView.setWebViewClient(new NoteViewClient());
         return v;
     }
 
@@ -58,11 +59,11 @@ public class Preview extends Fragment {
 
     public void updateNotePresentation(String md) {
         html = getCssLink() + converter.markdownToHtml(md);
-        Activity a = getActivity();
-        if (a != null) a.runOnUiThread(new Runnable() {
+        //noinspection ConstantConditions
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                webView.loadDataWithBaseURL(httpRedir, html, "text/html", "UTF-8", null);
+                webView.loadDataWithBaseURL(HTTP_REDIR, html, "text/html", "UTF-8", null);
             }
         });
     }
@@ -79,25 +80,30 @@ public class Preview extends Fragment {
                 try {
                     jumpToNote(url);
                 } catch (NoSuchElementException e) {
-                    Toast.makeText(getActivity(), "Linked note not found!", Toast.LENGTH_SHORT).show();
+                    //noinspection ConstantConditions
+                    Toast.makeText(Preview.this.getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                url = url.replace(httpRedir, "http://");
+                url = url.replace(HTTP_REDIR, HTTP);
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             }
             return true;
         }
 
         private void jumpToNote(final String url) {
+            long id;
             try {
-                long id = Long.parseLong(url.substring(5));
-                if (((NoteScreen) getActivity()).getDBClient().exists(id)) {
-                    Intent intent = new Intent(getActivity(), NoteScreen.class);
-                    intent.putExtra(ExtrasNames.NOTE_ID, id);
-                    startActivity(intent);
-                }
+                id = Long.parseLong(url.substring(5));
             } catch (NumberFormatException e) {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException(getString(R.string.error_link_invalid));
+            }
+            //noinspection ConstantConditions
+            if (((NoteScreen) getActivity()).getDBClient().exists(id)) {
+                Intent intent = new Intent(getActivity(), NoteScreen.class);
+                intent.putExtra(ExtrasNames.NOTE_ID, id);
+                startActivity(intent);
+            } else {
+                throw new NoSuchElementException(getString(R.string.error_link_not_found));
             }
         }
     }
