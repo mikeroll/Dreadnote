@@ -148,6 +148,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
     @Override
     public void finish() {
+        noteTitle.clearFocus();
         mDBClient.addOrUpdateNote(note_id, note);
         super.finish();
     }
