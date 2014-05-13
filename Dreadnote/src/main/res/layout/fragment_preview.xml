@@ -3,17 +3,12 @@
     android:id="@+id/preview_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/content_horizontal_margin"
-    android:paddingRight="@dimen/content_horizontal_margin"
-    android:paddingTop="@dimen/content_vertical_margin"
-    android:paddingBottom="@dimen/content_vertical_margin"
+
     tools:context="com.mikeroll.dreadnote.frontend.Preview">
 
     <WebView
             android:id="@+id/preview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scrollbars="vertical"
-            android:overScrollMode="never"/>
+            android:layout_height="fill_parent"/>
 
 </FrameLayout>

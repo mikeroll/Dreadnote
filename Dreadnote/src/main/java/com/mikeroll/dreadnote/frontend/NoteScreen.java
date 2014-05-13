@@ -44,8 +44,8 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     private ViewPager mPager;
     private ColorChooser colorChooser;
     private EditText noteTitle;
-    private Menu menu;
     private LayerDrawable bkg;
+    private int mode;
 
     // Entity/db stuff
     private long note_id;
@@ -82,7 +82,6 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
         mDBClient = new DBClient(DBHelper.connect(getApplicationContext()));
 
-        int mode;
         if (savedInstanceState != null) {
             note = savedInstanceState.getParcelable("note");
             mode = savedInstanceState.getInt("mode");
@@ -98,13 +97,14 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         }
 
         noteTitle.setText(note.getTitle());
-        colorChooser.readCurrentColor(note.getColor());
         bkg = new LayerDrawable(new Drawable[] { new ColorDrawable(Color.WHITE), new ColorDrawable(note.getColor()) } );
         getWindow().getDecorView().setBackgroundDrawable(bkg);
+        colorChooser.readCurrentColor(note.getColor());
 
-        readPrefs();
+        if (mPager.getCurrentItem() == mode) {
+            setMode(mode);
+        }
         mPager.setCurrentItem(mode);
-        setMode(mode);
     }
 
     private void readPrefs() {
@@ -114,14 +114,23 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
     @Override
     protected void onResume() {
-        readPrefs();
         super.onResume();
+        readPrefs();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.note_screen, menu);
-        this.menu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem pencil;
+        if ((pencil = menu.findItem(R.id.action_switch_mode)) != null) {
+            pencil.setIcon(mode == EDITOR ? R.drawable.ic_action_accept : R.drawable.ic_action_edit);
+        }
         return true;
     }
 
@@ -138,7 +147,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
                 switchPage();
                 return true;
             case R.id.action_discard_changes:
-                super.finish();
+                super.onBackPressed();
                 return true;
             case R.id.action_settings:
                 openSettings();
@@ -150,7 +159,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     @Override
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("mode", mPager.getCurrentItem());
+        outState.putInt("mode", mode);
         outState.putParcelable("note", note);
     }
 
@@ -162,11 +171,9 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     }
 
     private void setMode(int mode) {
+        this.mode = mode;
         boolean editing = (mode == EDITOR);
-        MenuItem pencil;
-        if (menu != null && (pencil = menu.findItem(R.id.action_switch_mode)) != null) {
-            pencil.setIcon(editing ? R.drawable.ic_action_accept : R.drawable.ic_action_edit);
-        }
+        invalidateOptionsMenu();
         noteTitle.setFocusable(editing);
         noteTitle.setFocusableInTouchMode(editing);
         noteTitle.setClickable(editing);
@@ -189,7 +196,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     }
 
     private void switchPage() {
-        int next = (mPager.getCurrentItem() == PREVIEW) ? EDITOR : PREVIEW;
+        int next = (mode == PREVIEW) ? EDITOR : PREVIEW;
         mPager.setCurrentItem(next);
     }
 
@@ -208,7 +215,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     @Override
     public void onNoteContentChanged(final String newData) {
         note.setContent(newData);
-        Preview preview = (Preview) mPager.getAdapter().instantiateItem(mPager, 0);
+        Preview preview = (Preview) mPager.getAdapter().instantiateItem(mPager, PREVIEW);
         preview.updateNotePresentation(newData);
     }
 
