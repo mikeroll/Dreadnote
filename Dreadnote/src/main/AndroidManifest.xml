@@ -22,7 +22,7 @@
             android:label="@string/title_activity_note_screen"
             android:logo="@drawable/ic_ab_logo"
             android:theme="@style/NoteScreen"
-            android:windowSoftInputMode="stateHidden|adjustPan"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             android:parentActivityName=".frontend.Dashboard">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

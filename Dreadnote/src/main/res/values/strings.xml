@@ -24,13 +24,13 @@
     <!-- Preferences -->
     <string name="pref_editor_title">Editor</string>
 
-    <string name="pref_toolbar">pref_toolbar</string>
-    <string name="pref_toolbar_title">Show toolbar</string>
-    <string name="pref_toolbar_summary">Useful shortcuts for editing</string>
-
     <string name="pref_sticky_keyboard">pref_sticky_keyboard</string>
     <string name="pref_sticky_keyboard_title">Enable auto-keyboard</string>
     <string name="pref_sticky_keyboard_summary">Open on-screen keyboard when editor is focused</string>
+
+    <string name="pref_toolbar">pref_toolbar</string>
+    <string name="pref_toolbar_title">Show toolbar</string>
+    <string name="pref_toolbar_summary">Useful shortcuts for editing</string>
 
     <!-- Messages -->
     <string name="error_link_invalid">Invalid link!</string>

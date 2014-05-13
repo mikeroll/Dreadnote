@@ -172,7 +172,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
         noteTitle.setClickable(editing);
         Drawable bkg = noteTitle.getBackground();
         if (bkg != null) bkg.setAlpha(editing ? 0xFF : 0x00);
-        showKeyboard(isStickyKeyboardEnabled && mPager.getCurrentItem() == EDITOR);
+        showKeyboard(isStickyKeyboardEnabled && editing);
     }
 
     private void showKeyboard(boolean show) {

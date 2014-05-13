@@ -50,7 +50,7 @@ public class Editor extends Fragment {
     public void onResume() {
         //noinspection ConstantConditions
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean showToolbar = prefs.getBoolean(getString(R.string.pref_toolbar), true);
+        boolean showToolbar = prefs.getBoolean(getString(R.string.pref_toolbar), false);
         toolbar.setVisibility(showToolbar ? View.VISIBLE : View.GONE);
         super.onResume();
     }
