@@ -6,12 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Notes.db";
 
     private static final String SQL_CREATE_TABLE =
             "CREATE TABLE " + DBContract.Note.TABLE + " (" +
-                    DBContract.Note._ID + " INTEGER PRIMARY KEY," +
+                    DBContract.Note._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     DBContract.Note.COL_TITLE + " TEXT," +
                     DBContract.Note.COL_COLOR + " INTEGER," +
                     DBContract.Note.COL_CONTENT + " TEXT" +
