@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import com.mikeroll.dreadnote.entity.Note;
 
-import java.util.ArrayList;
 
 public class DBClient {
 
@@ -43,7 +42,7 @@ public class DBClient {
         return db.insertWithOnConflict(DBContract.Note.TABLE, null, entry, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void deleteNotes(ArrayList<Long> ids) {
+    public void deleteNotes(Long[] ids) {
         SQLiteDatabase db = mDBHelper.getDB();
         String args = TextUtils.join(",", ids);
         db.execSQL(String.format("DELETE FROM %s WHERE %s IN (%s)", DBContract.Note.TABLE, DBContract.Note._ID, args));

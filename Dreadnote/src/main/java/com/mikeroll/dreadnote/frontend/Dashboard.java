@@ -16,7 +16,6 @@ import com.mikeroll.dreadnote.R;
 import com.mikeroll.dreadnote.storage.DBClient;
 import com.mikeroll.dreadnote.storage.DBHelper;
 
-import java.util.ArrayList;
 
 public class Dashboard extends Activity {
 
@@ -35,7 +34,7 @@ public class Dashboard extends Activity {
         noteListAdapter  = new ResourceCursorAdapter(this, R.layout.list_item, null, 0) {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                long id = cursor.getInt(0);
+                long id = cursor.getLong(0);
                 String title = cursor.getString(1);
                 int color = cursor.getInt(2);
                 ((TextView) view.findViewById(R.id.list_item_title)).setText(title);
@@ -101,14 +100,15 @@ public class Dashboard extends Activity {
         startActivity(intent);
     }
 
-    @SuppressWarnings({ "unchecked", "ConstantConditions" })
+    @SuppressWarnings("ConstantConditions")
     private void deleteSelected() {
         SparseBooleanArray selected = noteList.getCheckedItemPositions();
         if (selected != null) {
-            ArrayList<Long> ids = new ArrayList<Long>();
+            Long[] ids = new Long[selected.size()];
+            int p = 0;
             for (int i = 0; i < noteListAdapter.getCount(); i++) {
                 if (selected.get(i)) {
-                    ids.add((Long)noteList.getChildAt(i).getTag());
+                    ids[p++] = ((Cursor)noteListAdapter.getItem(i)).getLong(0);
                 }
             }
             new DeleteNotesTask().execute(ids);
@@ -116,11 +116,11 @@ public class Dashboard extends Activity {
         }
     }
 
-    private class DeleteNotesTask extends AsyncTask<ArrayList<Long>, Void, Void> {
+    private class DeleteNotesTask extends AsyncTask<Long, Void, Void> {
 
         @Override
-        protected Void doInBackground(ArrayList<Long>... ids) {
-            mDBClient.deleteNotes(ids[0]);
+        protected Void doInBackground(Long... ids) {
+            mDBClient.deleteNotes(ids);
             return null;
         }
     }
