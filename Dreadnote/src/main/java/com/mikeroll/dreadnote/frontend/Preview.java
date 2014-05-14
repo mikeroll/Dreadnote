@@ -21,10 +21,15 @@ public class Preview extends Fragment {
     private WebView webView;
 
     private String html;
+    private AndDown converter = new AndDown();
 
     /** Needed to process links not starting with "http://" */
     private static final String HTTP_REDIR = "http://re.dir/";
     private static final String HTTP = "http://";
+
+    private static final String NOTE_PREFIX = "note:";
+
+    private static final String CSS = "<link rel=\"stylesheet\" href=\"file:///android_asset/note.css\" type=\"text/css\">";
 
     public Preview() {}
 
@@ -55,10 +60,8 @@ public class Preview extends Fragment {
         if (ns != null) updateNotePresentation(ns.getNote().getContent());
     }
 
-    private AndDown converter = new AndDown();
-
     public void updateNotePresentation(String md) {
-        html = getCssLink() + converter.markdownToHtml(md);
+        html = CSS + converter.markdownToHtml(md);
         //noinspection ConstantConditions
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -68,15 +71,11 @@ public class Preview extends Fragment {
         });
     }
 
-    private static String getCssLink() {
-        return "<link rel=\"stylesheet\" href=\"file:///android_asset/note.css\" type=\"text/css\">";
-    }
-
     private class NoteViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.startsWith("note:")) {
+            if (url.startsWith(NOTE_PREFIX)) {
                 try {
                     jumpToNote(url);
                 } catch (NoSuchElementException e) {
@@ -93,7 +92,7 @@ public class Preview extends Fragment {
         private void jumpToNote(final String url) {
             long id;
             try {
-                id = Long.parseLong(url.substring(5));
+                id = Long.parseLong(url.substring(NOTE_PREFIX.length()));
             } catch (NumberFormatException e) {
                 throw new NoSuchElementException(getString(R.string.error_link_invalid));
             }

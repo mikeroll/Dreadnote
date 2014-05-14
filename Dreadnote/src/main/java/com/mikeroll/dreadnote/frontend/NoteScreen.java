@@ -84,6 +84,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
 
         if (savedInstanceState != null) {
             note = savedInstanceState.getParcelable("note");
+            note_id = savedInstanceState.getLong("note_id");
             mode = savedInstanceState.getInt("mode");
         } else {
             note_id = getIntent().getLongExtra(ExtrasNames.NOTE_ID, -1);
@@ -160,6 +161,7 @@ public class NoteScreen extends Activity implements Editor.OnNoteChangeListener 
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("mode", mode);
+        outState.putLong("note_id", note_id);
         outState.putParcelable("note", note);
     }
 
