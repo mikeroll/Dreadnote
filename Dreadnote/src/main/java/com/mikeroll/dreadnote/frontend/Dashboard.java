@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,17 +30,7 @@ public class Dashboard extends Activity {
         setContentView(R.layout.activity_dashboard);
 
         noteList = (ListView) findViewById(R.id.note_list);
-        noteListAdapter  = new ResourceCursorAdapter(this, R.layout.list_item, null, 0) {
-            @Override
-            public void bindView(View view, Context context, Cursor cursor) {
-                long id = cursor.getLong(0);
-                String title = cursor.getString(1);
-                int color = cursor.getInt(2);
-                ((TextView) view.findViewById(R.id.list_item_title)).setText(title);
-                ((ImageView) view.findViewById(R.id.list_item_colorbox)).setImageDrawable(new ColorDrawable(color));
-                view.setTag(id);
-            }
-        };
+        noteListAdapter  = new NoteAdapter(this);
         noteList.setAdapter(noteListAdapter);
         noteList.setOnItemClickListener(new OnNoteClickListener());
         noteList.setMultiChoiceModeListener(new NotePickListener());
@@ -145,6 +134,26 @@ public class Dashboard extends Activity {
         }
     }
 
+    private class NoteAdapter extends ResourceCursorAdapter {
+
+        public NoteAdapter(Context context) {
+            super(context, R.layout.list_item, null, 0);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            long id = cursor.getLong(0);
+            String title = cursor.getString(1);
+            int color = cursor.getInt(2);
+            ((TextView) view.findViewById(R.id.list_item_id)).setText("#" + Long.toString(id));
+            TextView textView = (TextView) view.findViewById(R.id.list_item_title);
+            textView.setText(title);
+            textView.setSelected(true);
+            view.findViewById(R.id.list_item_colorbox).setBackgroundColor(color);
+            view.setTag(id);
+        }
+    }
+
     private class OnNoteClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -161,9 +170,9 @@ public class Dashboard extends Activity {
         }
 
         @Override
+        @SuppressWarnings("ConstantConditions")
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            MenuInflater inflater = actionMode.getMenuInflater();
-            inflater.inflate(R.menu.notelist_context, menu);
+            actionMode.getMenuInflater().inflate(R.menu.notelist_context, menu);
             return true;
         }
 
